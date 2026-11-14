@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp AI Automation Dashboard — Insaf AI</title>
+    <link rel="icon" href="assets/images/site_icon_1781517971.png">
+    <link rel="stylesheet" href="assets/css/fonts.css">
+    <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/light.css">
+    <script src="assets/js/light.js"></script>
+    <style>
+        body { min-height: 100vh; background: var(--bg-primary, #0a0a1a); color: var(--text-primary, #e2e8f0); }
+        .dash-header {
+            position: sticky; top: 0; z-index: 50;
+            background: rgba(10, 10, 26, 0.9); backdrop-filter: blur(18px);
+            border-bottom: 1px solid var(--border, rgba(255,255,255,0.08));
+            padding: 14px 24px;
+        }
+        [data-theme="light"] .dash-header { background: rgba(255,255,255,0.92); }
+        .dash-header-inner {
+            max-width: 1280px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+        }
+        .dash-brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 18px; color: #fff; text-decoration: none; }
+        [data-theme="light"] .dash-brand { color: #0f172a; }
+        .dash-brand img { height: 34px; }
+        .dash-user-bar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .user-pill {
+            padding: 7px 14px; border-radius: 999px; font-size: 13px; font-weight: 600;
+            background: rgba(245,166,35,0.12); color: #f5a623; border: 1px solid rgba(245,166,35,0.28);
+        }
+        .dash-wrap { max-width: 1280px; margin: 0 auto; padding: 28px 24px 72px; }
+        .dash-top-title { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+        .dash-top-title h1 { font-size: clamp(22px, 3vw, 30px); font-weight: 800; margin-bottom: 6px; }
+        .dash-top-title p { color: var(--text-secondary, #94a3b8); font-size: 14px; }
+
+        .dash-grid { display: grid; grid-template-columns: 400px 1fr; gap: 24px; align-items: start; }
+        @media (max-width: 980px) { .dash-grid { grid-template-columns: 1fr; } }
+
+        .dash-card {
+            background: var(--bg-card, #12122a);
+            border: 1px solid var(--border, rgba(255,255,255,0.09));
+            border-radius: 18px;
+            padding: 22px;
+            margin-bottom: 22px;
+        }
+        [data-theme="light"] .dash-card { background: #ffffff; border-color: rgba(15,23,42,0.1); box-shadow: 0 8px 24px rgba(15,23,42,0.05); }
+        .dash-card h2 { font-size: 17px; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        .dash-card .sub { font-size: 13px; color: var(--text-secondary, #94a3b8); margin-bottom: 18px; line-height: 1.5; }
+
+        .status-badge {
+            display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 999px; font-size: 12px; font-weight: 700;
+        }
+        .status-disconnected { background: rgba(239,68,68,0.14); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+        .status-qr_ready, .status-connecting, .status-reconnecting { background: rgba(245,166,35,0.14); color: #f5a623; border: 1px solid rgba(245,166,35,0.35); }
+        .status-connected { background: rgba(0,210,106,0.14); color: #00d26a; border: 1px solid rgba(0,210,106,0.35); }
+
+        .qr-box {
+            background: #ffffff; border-radius: 14px; padding: 18px; text-align: center;
+            margin: 16px 0; border: 1px solid rgba(255,255,255,0.12);
+        }
+        .qr-box img { max-width: 240px; width: 100%; height: auto; display: block; margin: 0 auto 10px; border-radius: 8px; }
+        .qr-steps { font-size: 12.5px; color: #334155; line-height: 1.6; text-align: left; background: #f8fafc; padding: 10px 12px; border-radius: 8px; }
+
+        .connected-box {
+            background: rgba(0,210,106,0.08); border: 1px solid rgba(0,210,106,0.28);
+            border-radius: 12px; padding: 14px; margin: 14px 0;
+        }
+        .connected-box .phone { font-size: 18px; font-weight: 800; color: #00d26a; margin-bottom: 4px; }
+        .connected-box .meta { font-size: 12.5px; color: var(--text-secondary, #94a3b8); }
+
+        .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+        .btn-sm { padding: 9px 16px; font-size: 13px; border-radius: 10px; font-weight: 600; cursor: pointer; border: none; }
+        .btn-danger { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.35); }
+        .btn-danger:hover { background: rgba(239,68,68,0.25); }
+        .btn-ghost { background: rgba(255,255,255,0.06); color: inherit; border: 1px solid var(--border, rgba(255,255,255,0.15)); }
+
+        .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        @media (max-width: 640px) { .field-grid { grid-template-columns: 1fr; } }
+        .form-group { margin-bottom: 14px; }
+        .form-label { display: block; font-size: 12.5px; font-weight: 600; margin-bottom: 6px; color: var(--text-secondary, #cbd5e1); }
+        .form-control {
+            width: 100%; padding: 10px 13px; border-radius: 10px; font-size: 13.5px;
+            background: var(--bg-input, #1a1a3e); color: inherit;
+            border: 1px solid var(--border, rgba(255,255,255,0.12));
+            font-family: inherit;
+        }
+        [data-theme="light"] .form-control { background: #f8fafc; border-color: #cbd5e1; color: #0f172a; }
+        textarea.form-control { min-height: 92px; resize: vertical; line-height: 1.5; }
+
+        .toggle-row {
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            padding: 11px 14px; border-radius: 12px;
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border, rgba(255,255,255,0.08));
+            margin-bottom: 14px;
+        }
+        [data-theme="light"] .toggle-row { background: #f8fafc; border-color: #e2e8f0; }
+
+        .chip-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+        .model-chip {
+            font-size: 11.5px; padding: 4px 10px; border-radius: 999px; cursor: pointer;
+            background: rgba(124,58,237,0.14); color: #a78bfa; border: 1px solid rgba(124,58,237,0.3);
+        }
+        .model-chip:hover { background: rgba(124,58,237,0.28); }
+
+        .product-list { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; max-height: 280px; overflow-y: auto; }
+        .product-item {
+            display: flex; align-items: center; justify-content: space-between; gap: 10px;
+            padding: 10px 12px; border-radius: 10px;
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border, rgba(255,255,255,0.08));
+            font-size: 13px;
+        }
+        [data-theme="light"] .product-item { background: #f8fafc; border-color: #e2e8f0; }
+
+        .msg-feed { display: flex; flex-direction: column; gap: 10px; max-height: 400px; overflow-y: auto; }
+        .msg-item {
+            padding: 11px 14px; border-radius: 12px; font-size: 13px; line-height: 1.5;
+            border: 1px solid var(--border, rgba(255,255,255,0.08));
+        }
+        .msg-incoming { background: rgba(37,99,235,0.1); border-color: rgba(37,99,235,0.25); }
+        .msg-outgoing { background: rgba(0,210,106,0.09); border-color: rgba(0,210,106,0.25); }
+        .msg-meta { display: flex; justify-content: space-between; gap: 8px; font-size: 11.5px; opacity: 0.78; margin-bottom: 4px; font-weight: 600; }
+
+        .toast-alert {
+            position: fixed; bottom: 22px; right: 22px; z-index: 300;
+            padding: 12px 18px; border-radius: 12px; font-size: 13.5px; font-weight: 600;
+            background: #1e293b; color: #fff; border: 1px solid rgba(255,255,255,0.18);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.35); display: none; max-width: 380px;
+        }
+        .test-reply-box {
+            margin-top: 12px; padding: 12px 14px; border-radius: 12px; font-size: 13.5px; line-height: 1.6;
+            background: rgba(0,210,106,0.09); border: 1px solid rgba(0,210,106,0.28); display: none; white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+<header class="dash-header">
+    <div class="dash-header-inner">
+        <a href="index.html" class="dash-brand">
+            <img src="assets/images/site_logo_1781517970.png" alt="Insaf AI">
+            <span>Insaf AI · WhatsApp Bot</span>
+        </a>
+        <div class="dash-user-bar">
+            <span class="user-pill" id="userEmailPill">Loading...</span>
+            <a href="index.html" class="btn btn-outline btn-sm">Website</a>
+            <button type="button" class="btn-sm btn-danger" id="logoutBtn">Logout</button>
+        </div>
+    </div>
+</header>
+
+<main class="dash-wrap">
+    <div class="dash-top-title">
+        <div>
+            <h1>WhatsApp QR Connect &amp; AI Auto-Reply Dashboard</h1>
+            <p>Scan your WhatsApp QR once — sessions are persisted safely in Supabase Postgres, and incoming messages get instant AI replies 24/7.</p>
+        </div>
+    </div>
+
+    <div class="dash-grid">
+        <!-- LEFT COLUMN: WhatsApp QR + Product Catalog -->
+        <div>
+            <section class="dash-card">
+                <h2>
+                    <span>📱 WhatsApp Connection</span>
+                    <span class="status-badge status-disconnected" id="waStatusBadge">Disconnected</span>
+                </h2>
+                <p class="sub">Link your WhatsApp using Linked Devices QR code. No official WhatsApp Business API approval required.</p>
+
+                <div id="waConnectedBox" class="connected-box" style="display:none;">
+                    <div class="phone" id="waPhoneText">+880...</div>
+                    <div class="meta" id="waPushNameText">Connected &amp; listening for incoming messages</div>
+                </div>
+
+                <div id="waQrBox" class="qr-box" style="display:none;">
+                    <img id="waQrImg" src="" alt="WhatsApp QR Code">
+                    <div class="qr-steps">
+                        <strong>How to Connect:</strong><br>
+                        1. Open <strong>WhatsApp</strong> on your phone<br>
+                        2. Tap <strong>Settings / ⋮ → Linked Devices</strong><br>
+                        3. Tap <strong>Link a Device</strong> &amp; scan this QR code
+                    </div>
+                </div>
+
+                <div id="waErrorBox" style="display:none;color:#f87171;font-size:12.5px;margin-bottom:12px;"></div>
+
+                <div class="btn-row">
+                    <button type="button" class="btn btn-primary btn-sm" id="connectWaBtn">Connect / Generate QR</button>
+                    <button type="button" class="btn-sm btn-ghost" id="resetQrBtn" title="Force fresh QR">Fresh QR</button>
+                    <button type="button" class="btn-sm btn-danger" id="disconnectWaBtn" style="display:none;">Disconnect</button>
+                </div>
+            </section>
+
+            <section class="dash-card">
+                <h2>🛍️ Product Catalog (AI Knowledge)</h2>
+                <p class="sub">Products added here are automatically included when the AI answers customer price &amp; stock questions.</p>
+                <form id="productForm">
+                    <div class="field-grid">
+                        <div class="form-group">
+                            <label class="form-label">Product Name</label>
+                            <input type="text" id="prodName" class="form-control" placeholder="e.g. Premium Dolna Chair" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Price</label>
+                            <input type="text" id="prodPrice" class="form-control" placeholder="e.g. ৳1,500" required>
+                        </div>
+                    </div>
+                    <div class="field-grid">
+                        <div class="form-group">
+                            <label class="form-label">Stock Status</label>
+                            <select id="prodStock" class="form-control">
+                                <option value="In Stock">In Stock</option>
+                                <option value="Limited Stock">Limited Stock</option>
+                                <option value="Out of Stock">Out of Stock</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Short Details</label>
+                            <input type="text" id="prodDesc" class="form-control" placeholder="Free delivery in Dhaka">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm">+ Add Product</button>
+                </form>
+                <div class="product-list" id="productList"></div>
+            </section>
+        </div>
+
+        <!-- RIGHT COLUMN: AI Settings + Test Chat + Live Logs -->
+        <div>
+            <section class="dash-card">
+                <h2>🤖 Multi-Provider AI Auto-Reply Settings</h2>
+                <p class="sub">Choose your preferred AI provider (Gemini has a free tier via Google AI Studio), configure your Bangla/English prompt, and toggle auto-reply.</p>
+
+                <form id="aiSettingsForm">
+                    <div class="toggle-row">
+                        <div>
+                            <strong style="font-size:14px;">Enable WhatsApp AI Auto-Reply</strong>
+                            <div style="font-size:12px;color:var(--text-secondary,#94a3b8);">When ON, incoming WhatsApp messages are answered automatically by AI.</div>
+                        </div>
+                        <input type="checkbox" id="aiEnabled" style="width:20px;height:20px;cursor:pointer;" checked>
+                    </div>
+
+                    <div class="field-grid">
+                        <div class="form-group">
+                            <label class="form-label">AI Provider</label>
+                            <select id="aiProvider" class="form-control">
+                                <option value="gemini">Google Gemini (Free tier available)</option>
+                                <option value="openai">OpenAI (GPT-4o / GPT-4o-mini)</option>
+                                <option value="groq">Groq (Ultra-fast Llama 3.3)</option>
+                                <option value="openrouter">OpenRouter (Multi-model)</option>
+                                <option value="anthropic">Anthropic Claude</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Model Name</label>
+                            <input type="text" id="aiModel" class="form-control" placeholder="gemini-2.5-flash">
+                            <div class="chip-row" id="modelChips"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">API Key <span id="apiKeyStatusBadge" style="font-weight:400;opacity:0.8;"></span></label>
+                        <input type="password" id="aiApiKey" class="form-control" placeholder="Paste your Gemini / OpenAI / Groq / OpenRouter / Claude API key">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">System Prompt (AI Instructions)</label>
+                        <textarea id="aiSystemPrompt" class="form-control" placeholder="Tell the AI how to behave, language (Bangla/English), tone, and rules..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Business Knowledge / Delivery &amp; Payment Info</label>
+                        <textarea id="aiKnowledge" class="form-control" placeholder="Example: Delivery charge 60 Tk inside Dhaka, 120 Tk outside Dhaka. Cash on delivery available. Hotline: 01969598055."></textarea>
+                    </div>
+
+                    <div class="field-grid">
+                        <div class="form-group">
+                            <label class="form-label">Typing Delay (ms)</label>
+                            <input type="number" id="aiDelay" class="form-control" min="0" max="10000" value="1500">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Memory History (messages)</label>
+                            <input type="number" id="aiMaxHistory" class="form-control" min="1" max="30" value="10">
+                        </div>
+                    </div>
+
+                    <div class="toggle-row">
+                        <div>
+                            <strong style="font-size:13.5px;">Ignore WhatsApp Group Messages</strong>
+                            <div style="font-size:12px;color:var(--text-secondary,#94a3b8);">Recommended ON so the bot only replies to direct 1-on-1 customer chats.</div>
+                        </div>
+                        <input type="checkbox" id="aiIgnoreGroups" style="width:18px;height:18px;cursor:pointer;" checked>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-sm">Save AI Settings</button>
+                </form>
+            </section>
+
+            <section class="dash-card">
+                <h2>🧪 Test AI Reply (Preview)</h2>
+                <p class="sub">Test how your AI responds using your saved settings and product catalog before sending live WhatsApp replies.</p>
+                <div style="display:flex;gap:10px;">
+                    <input type="text" id="testMsgInput" class="form-control" placeholder="Ask something like: দাম কত? ডেলিভারি চার্জ কত?">
+                    <button type="button" class="btn btn-primary btn-sm" id="runTestBtn">Test</button>
+                </div>
+                <div id="testReplyBox" class="test-reply-box"></div>
+            </section>
+
+            <section class="dash-card">
+                <h2>
+                    <span>💬 Live WhatsApp Message Logs</span>
+                    <button type="button" class="btn-sm btn-ghost" id="refreshLogsBtn">Refresh</button>
+                </h2>
+                <p class="sub">Recent incoming customer messages and automated AI replies stored in Supabase.</p>
+                <div class="msg-feed" id="messageFeed">
+                    <div style="opacity:0.7;font-size:13px;">No messages yet. Connect WhatsApp and send a message to test!</div>
+                </div>
+            </section>
+        </div>
+    </div>
+</main>
+
+<div id="toastAlert" class="toast-alert"></div>
+
+<script src="assets/js/supabase.min.js"></script>
+<script src="assets/js/dashboard.js"></script>
+</body>
+</html>

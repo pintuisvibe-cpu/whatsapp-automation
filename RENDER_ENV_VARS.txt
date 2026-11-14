@@ -1,0 +1,9 @@
+# Copy & Paste these Environment Variables into Render Dashboard -> Service -> Environment
+# (Keep SUPABASE_SERVICE_ROLE_KEY private — never share publicly)
+
+NODE_ENV=production
+SUPABASE_URL=https://bktvrzmecvraihdejiys.supabase.co
+SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJrdHZyem1lY3ZyYWloZGVqaXlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ2MjM0ODUsImV4cCI6MjExMDE5OTQ4NX0.rb9Tvp4jx_Rl0z57AblyLNSLOzZgLURjNUQ3ozOO7gk
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+DEFAULT_AI_PROVIDER=gemini
+DEFAULT_AI_MODEL=gemini-2.5-flash
