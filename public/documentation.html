@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Documentation & Facebook Permissions Guide — Insaf AI</title>
+    <meta name="description" content="Complete documentation and manual setup guide for Facebook Page Permissions, Graph API Explorer, Webhooks, and Comment Auto-Replies for Insaf AI.">
+    <link rel="canonical" href="documentation.html" />
+    <!-- Initialize DataLayer for GTM & Meta Pixel -->
+    <script>window.dataLayer = window.dataLayer || [];</script>
+
+    
+    
+    
+    
+    
+    
+    
+                <link rel="icon" href="assets/images/site_icon_1781517971.png">
+        <link href="assets/css/fonts.css" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}
+        html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;}
+        :root{
+            --gold:#f5a623;
+            --dark:#0a0a1a;
+            --purple:#7c3aed;
+            --blue:#2563eb;
+            --green:#00d26a;
+            --gray:#94a3b8;
+            --card:#12122a;
+            --border:rgba(255,255,255,0.08);
+            --code-bg:#0d1117;
+        }
+        body{font-family:'Inter',sans-serif;background:var(--dark);color:#e2e8f0;overflow-x:hidden;line-height:1.7;}
+        a{text-decoration:none;color:inherit;}
+
+        /* Header */
+        .header{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 0;background:rgba(10,10,26,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+        .header-inner{max-width:1280px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+        .logo-area{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;color:#fff;}
+        .logo-area img{height:36px;object-fit:contain;}
+        .nav-right{display:flex;gap:14px;align-items:center;}
+
+        /* Language Switcher Pill */
+        .lang-switcher{
+            display:inline-flex;
+            background:rgba(255,255,255,0.06);
+            border:1px solid var(--border);
+            border-radius:30px;
+            padding:3px;
+            gap:2px;
+        }
+        .lang-btn{
+            border:none;
+            background:transparent;
+            color:var(--gray);
+            font-size:13px;
+            font-weight:700;
+            padding:6px 14px;
+            border-radius:20px;
+            cursor:pointer;
+            transition:all 0.25s ease;
+            display:flex;
+            align-items:center;
+            gap:6px;
+        }
+        .lang-btn.active{
+            background:linear-gradient(135deg, var(--gold), #e09500);
+            color:#0a0a1a;
+            box-shadow:0 2px 10px rgba(245,166,35,0.3);
+        }
+
+        .nav-btns{display:flex;gap:12px;align-items:center;}
+        .btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 22px;border-radius:10px;font-weight:600;font-size:14px;border:none;cursor:pointer;transition:all .25s;}
+        .btn-outline{background:transparent;border:1.5px solid rgba(255,255,255,0.2);color:#fff;}
+        .btn-outline:hover{border-color:var(--gold);color:var(--gold);}
+        .btn-primary{background:linear-gradient(135deg,var(--gold),#e09500);color:#0a0a1a;}
+        .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(245,166,35,0.3);}
+
+        /* Hero */
+        .doc-hero{padding:140px 24px 50px;text-align:center;position:relative;overflow:hidden;}
+        .doc-hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:700px;height:400px;background:radial-gradient(ellipse,rgba(245,166,35,0.1),transparent 70%);pointer-events:none;}
+        .doc-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:20px;background:rgba(245,166,35,0.12);border:1px solid rgba(245,166,35,0.3);color:var(--gold);font-size:13px;font-weight:700;margin-bottom:18px;}
+        .doc-hero h1{font-size:clamp(24px,5vw,48px);font-weight:900;color:#fff;margin-bottom:16px;letter-spacing:-0.5px;word-break:break-word;}
+        .doc-hero p{font-size:16px;color:var(--gray);max-width:750px;margin:0 auto 24px;word-break:break-word;}
+
+        /* Container & Layout */
+        .doc-container{max-width:1280px;margin:0 auto;padding:0 24px 100px;display:grid;grid-template-columns:280px 1fr;gap:40px;box-sizing:border-box;}
+        
+        /* Sticky Sidebar Nav */
+        .doc-sidebar{position:sticky;top:100px;height:fit-content;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;}
+        .sidebar-title{font-size:12px;font-weight:800;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;}
+        .sidebar-nav{list-style:none;}
+        .sidebar-nav li{margin-bottom:8px;}
+        .sidebar-nav a{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;font-size:13px;font-weight:600;color:var(--gray);transition:all .2s;}
+        .sidebar-nav a:hover, .sidebar-nav a.active{background:rgba(245,166,35,0.12);color:var(--gold);}
+
+        /* Doc Sections */
+        .doc-main{display:flex;flex-direction:column;gap:32px;min-width:0;}
+        .doc-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:36px;transition:border-color 0.3s;max-width:100%;box-sizing:border-box;}
+        .doc-card:hover{border-color:rgba(245,166,35,0.25);}
+        .doc-card-header{display:flex;align-items:center;gap:14px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+        .doc-icon{width:42px;height:42px;border-radius:12px;background:rgba(245,166,35,0.15);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;flex-shrink:0;}
+        .doc-card h2{font-size:22px;font-weight:800;color:#fff;word-break:break-word;overflow-wrap:anywhere;}
+        .doc-card h3{font-size:17px;font-weight:700;color:var(--gold);margin:24px 0 12px;word-break:break-word;overflow-wrap:anywhere;}
+
+        /* Alert Box */
+        .doc-alert-danger{
+            background:rgba(239,68,68,0.12);
+            border:1px solid rgba(239,68,68,0.3);
+            border-radius:12px;
+            padding:16px 20px;
+            margin:16px 0;
+            color:#f87171;
+            font-size:14px;
+            line-height:1.6;
+            word-break:break-word;
+            overflow-wrap:anywhere;
+        }
+
+        /* Permission List Grid */
+        .perm-grid{display:grid;grid-template-columns:1fr;gap:16px;margin-top:18px;max-width:100%;}
+        .perm-item{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;padding:20px;transition:all 0.25s;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;box-sizing:border-box;}
+        .perm-item:hover{background:rgba(245,166,35,0.04);border-color:rgba(245,166,35,0.3);}
+        .perm-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:10px;}
+        .perm-name{font-family:'Fira Code',monospace;font-size:14px;font-weight:700;color:#38bdf8;background:rgba(56,189,248,0.1);padding:4px 10px;border-radius:6px;word-break:break-all;overflow-wrap:anywhere;white-space:normal;max-width:100%;display:inline-block;}
+        .perm-bracket{font-size:13px;font-weight:700;color:var(--gold);background:rgba(245,166,35,0.12);padding:4px 12px;border-radius:20px;}
+        .perm-desc{font-size:14px;color:#cbd5e1;line-height:1.6;word-break:break-word;overflow-wrap:anywhere;}
+        
+        /* Steps List */
+        .steps-list{list-style:none;counter-reset:step-counter;margin-top:16px;}
+        .steps-list li{position:relative;padding-left:48px;margin-bottom:20px;font-size:14px;color:#cbd5e1;line-height:1.7;word-break:break-word;overflow-wrap:anywhere;}
+        .steps-list li::before{counter-increment:step-counter;content:counter(step-counter);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--gold),#e09500);color:#0a0a1a;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+
+        /* English Reference Table */
+        .table-responsive{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:20px;max-width:100%;border-radius:10px;}
+        .eng-table{width:100%;min-width:500px;border-collapse:collapse;text-align:left;font-size:13.5px;}
+        .eng-table th{background:rgba(255,255,255,0.05);color:#fff;font-weight:700;padding:14px 16px;border-bottom:2px solid var(--border);}
+        .eng-table td{padding:14px 16px;border-bottom:1px solid var(--border);color:var(--gray);word-break:break-word;overflow-wrap:anywhere;}
+        .eng-table tr:hover td{background:rgba(255,255,255,0.02);color:#fff;}
+
+        /* Language Toggle Classes */
+        .lang-content-bn { display: block; }
+        .lang-content-en { display: none; }
+        
+        body.lang-en .lang-content-bn { display: none !important; }
+        body.lang-en .lang-content-en { display: block !important; }
+        
+        /* Responsive Mobile & Tablet Layout Redesign */
+        @media (max-width: 992px) {
+            html, body {
+                overflow-x: hidden !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            .header {
+                position: relative !important;
+                padding: 12px 0 !important;
+                backdrop-filter: none !important;
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+            .header-inner {
+                padding: 0 12px !important;
+                flex-wrap: wrap !important;
+                gap: 8px !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            .logo-area { font-size: 16px !important; }
+            .logo-area img { height: 26px !important; }
+            .nav-right { gap: 6px !important; flex-wrap: wrap !important; }
+            .lang-switcher { padding: 2px !important; }
+            .lang-btn { padding: 4px 8px !important; font-size: 11px !important; }
+            .nav-btns { gap: 6px !important; }
+            .nav-btns .btn { padding: 5px 10px !important; font-size: 11px !important; }
+
+            .doc-hero {
+                padding: 30px 12px 20px !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                overflow: hidden !important;
+                box-sizing: border-box !important;
+                text-align: center !important;
+            }
+            .doc-hero h1 {
+                font-size: 20px !important;
+                line-height: 1.35 !important;
+                word-break: break-all !important;
+                word-wrap: break-word !important;
+                overflow-wrap: anywhere !important;
+                white-space: normal !important;
+            }
+            .doc-hero p {
+                font-size: 13px !important;
+                line-height: 1.5 !important;
+                word-break: break-all !important;
+                word-wrap: break-word !important;
+                overflow-wrap: anywhere !important;
+                white-space: normal !important;
+            }
+
+            .doc-container {
+                display: block !important;
+                padding: 0 12px 40px !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+                overflow-x: hidden !important;
+            }
+            .doc-sidebar {
+                position: sticky !important;
+                top: 0 !important;
+                z-index: 95 !important;
+                margin-bottom: 16px !important;
+                padding: 8px 10px !important;
+                background: rgba(10,10,26,0.96) !important;
+                backdrop-filter: blur(16px) !important;
+                border: 1px solid var(--border) !important;
+                border-radius: 12px !important;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.5) !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            .sidebar-title { display: none !important; }
+            .sidebar-nav {
+                display: flex !important;
+                overflow-x: auto !important;
+                gap: 6px !important;
+                scrollbar-width: none !important;
+                -webkit-overflow-scrolling: touch !important;
+                width: 100% !important;
+            }
+            .sidebar-nav::-webkit-scrollbar { display: none !important; }
+            .sidebar-nav li { margin-bottom: 0 !important; flex-shrink: 0 !important; }
+            .sidebar-nav a {
+                padding: 6px 12px !important;
+                border-radius: 20px !important;
+                border: 1px solid var(--border) !important;
+                font-size: 11.5px !important;
+                white-space: nowrap !important;
+                background: rgba(255,255,255,0.03) !important;
+            }
+            .sidebar-nav a.active {
+                background: linear-gradient(135deg, var(--gold), #e09500) !important;
+                color: #0a0a1a !important;
+                border-color: var(--gold) !important;
+                font-weight: 800 !important;
+            }
+            
+            /* Vertical Card Deck Layout */
+            .doc-main {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 20px !important;
+                padding: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+                overflow-x: hidden !important;
+            }
+            .doc-card {
+                flex: none !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                margin-bottom: 0 !important;
+                padding: 18px 14px !important;
+                box-sizing: border-box !important;
+                overflow: hidden !important;
+                height: auto !important;
+                border: 1px solid rgba(245,166,35,0.3) !important;
+                box-shadow: 0 6px 24px rgba(0,0,0,0.4) !important;
+                border-radius: 16px !important;
+                background: var(--card) !important;
+            }
+            .doc-card-header {
+                display: flex !important;
+                align-items: flex-start !important;
+                gap: 12px !important;
+                flex-wrap: nowrap !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+                margin-bottom: 16px !important;
+                padding-bottom: 12px !important;
+                border-bottom: 1px solid var(--border) !important;
+            }
+            .doc-icon {
+                width: 36px !important;
+                height: 36px !important;
+                font-size: 18px !important;
+                border-radius: 10px !important;
+                flex-shrink: 0 !important;
+            }
+            .doc-card-header > div:last-child {
+                min-width: 0 !important;
+                flex: 1 1 auto !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            .doc-card-header h2 {
+                font-size: 16px !important;
+                line-height: 1.4 !important;
+                word-break: break-all !important;
+                word-wrap: break-word !important;
+                overflow-wrap: anywhere !important;
+                white-space: normal !important;
+                margin: 0 0 4px 0 !important;
+                color: #fff !important;
+                max-width: 100% !important;
+            }
+            .doc-card-header h2 span {
+                word-break: break-all !important;
+                word-wrap: break-word !important;
+                overflow-wrap: anywhere !important;
+                white-space: normal !important;
+                display: block !important;
+                max-width: 100% !important;
+            }
+            .doc-card-header p {
+                font-size: 12px !important;
+                line-height: 1.4 !important;
+                word-break: break-all !important;
+                word-wrap: break-word !important;
+                overflow-wrap: anywhere !important;
+                white-space: normal !important;
+                margin: 0 !important;
+                max-width: 100% !important;
+            }
+            .doc-card h3 {
+                font-size: 14px !important;
+                word-break: break-all !important;
+                word-wrap: break-word !important;
+                overflow-wrap: anywhere !important;
+                white-space: normal !important;
+                margin: 16px 0 10px 0 !important;
+            }
+            .doc-card *, .perm-item *, .doc-alert-danger * {
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+                word-break: break-all !important;
+                word-wrap: break-word !important;
+                overflow-wrap: anywhere !important;
+                white-space: normal !important;
+            }
+            .doc-alert-danger {
+                padding: 12px 10px !important;
+                margin: 14px 0 !important;
+                border-radius: 10px !important;
+                font-size: 12.5px !important;
+                line-height: 1.55 !important;
+                box-sizing: border-box !important;
+                width: 100% !important;
+                word-break: break-all !important;
+                word-wrap: break-word !important;
+                overflow-wrap: anywhere !important;
+            }
+            .perm-item {
+                padding: 14px 10px !important;
+                margin-bottom: 12px !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+                overflow-x: hidden !important;
+                border-radius: 12px !important;
+                width: 100% !important;
+            }
+            .perm-header {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 6px !important;
+                width: 100% !important;
+            }
+            .perm-name {
+                word-break: break-all !important;
+                word-wrap: break-word !important;
+                overflow-wrap: anywhere !important;
+                white-space: normal !important;
+                display: inline-block !important;
+                max-width: 100% !important;
+                font-size: 12px !important;
+                padding: 3px 8px !important;
+            }
+            .steps-list {
+                margin-top: 14px !important;
+                padding-left: 0 !important;
+                width: 100% !important;
+                list-style: none !important;
+            }
+            .steps-list li {
+                position: relative !important;
+                padding-left: 30px !important;
+                font-size: 12.5px !important;
+                line-height: 1.6 !important;
+                margin-bottom: 14px !important;
+                word-break: break-all !important;
+                word-wrap: break-word !important;
+                overflow-wrap: anywhere !important;
+                white-space: normal !important;
+                max-width: 100% !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            .steps-list li strong, .steps-list li a, .steps-list li em {
+                word-break: break-all !important;
+                word-wrap: break-word !important;
+                overflow-wrap: anywhere !important;
+                white-space: normal !important;
+                display: inline !important;
+                max-width: 100% !important;
+            }
+            .steps-list li::before {
+                position: absolute !important;
+                left: 0 !important;
+                top: 2px !important;
+                width: 22px !important;
+                height: 22px !important;
+                font-size: 10.5px !important;
+                border-radius: 6px !important;
+            }
+            .table-responsive {
+                width: 100% !important;
+                max-width: 100% !important;
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+                box-sizing: border-box !important;
+                border: 1px solid var(--border) !important;
+                border-radius: 10px !important;
+            }
+            .eng-table {
+                min-width: 450px !important;
+                width: 100% !important;
+            }
+            code, pre {
+                max-width: 100% !important;
+                word-break: break-all !important;
+                word-wrap: break-word !important;
+                overflow-wrap: anywhere !important;
+                white-space: pre-wrap !important;
+            }
+        }
+
+        /* Light Theme Overrides for Docs Page */
+        html[data-theme="light"] body {
+            background: #f8fafc;
+            color: #0f172a;
+        }
+        html[data-theme="light"] .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+        }
+        html[data-theme="light"] .logo-area {
+            color: #0f172a;
+        }
+        html[data-theme="light"] .btn-outline {
+            border-color: rgba(15, 23, 42, 0.2);
+            color: #0f172a;
+        }
+        html[data-theme="light"] .doc-hero h1 {
+            color: #0f172a !important;
+        }
+        html[data-theme="light"] .doc-hero p {
+            color: #475569 !important;
+        }
+        html[data-theme="light"] .doc-sidebar {
+            background: #ffffff !important;
+            border-color: rgba(15, 23, 42, 0.08) !important;
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04) !important;
+        }
+        html[data-theme="light"] .sidebar-title {
+            color: #64748b !important;
+        }
+        html[data-theme="light"] .sidebar-nav a {
+            color: #475569 !important;
+        }
+        html[data-theme="light"] .sidebar-nav a:hover,
+        html[data-theme="light"] .sidebar-nav a.active {
+            color: #0a0a1a !important;
+        }
+        html[data-theme="light"] .doc-card {
+            background: #ffffff !important;
+            border-color: rgba(15, 23, 42, 0.08) !important;
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04) !important;
+        }
+        html[data-theme="light"] .doc-card h2 {
+            color: #0f172a !important;
+        }
+        html[data-theme="light"] .doc-card h3 {
+            color: #96590a !important;
+        }
+        html[data-theme="light"] .perm-item {
+            background: #f8fafc !important;
+            border-color: rgba(15, 23, 42, 0.08) !important;
+        }
+        html[data-theme="light"] .perm-desc {
+            color: #334155 !important;
+        }
+        html[data-theme="light"] .steps-list li {
+            color: #334155 !important;
+        }
+        html[data-theme="light"] .eng-table th {
+            background: #f1f5f9 !important;
+            color: #0f172a !important;
+            border-bottom-color: rgba(15, 23, 42, 0.1) !important;
+        }
+        html[data-theme="light"] .eng-table td {
+            color: #334155 !important;
+            border-bottom-color: rgba(15, 23, 42, 0.06) !important;
+        }
+    </style>
+    <script src="assets/js/light.js"></script>
+    <link rel="stylesheet" href="assets/css/light.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-inner">
+            <a href="index.html" class="logo-area">
+                                    <img src="assets/images/site_logo_1781517970.png" alt="Insaf AI">
+                            </a>
+            
+            <div class="nav-right">
+                <!-- Language Switcher Button -->
+                <div class="lang-switcher">
+                    <button class="lang-btn active" id="btnLangBn" onclick="switchLanguage('bn')">
+                        <span>🇧🇩</span> বাংলা
+                    </button>
+                    <button class="lang-btn" id="btnLangEn" onclick="switchLanguage('en')">
+                        <span>🇬🇧</span> English
+                    </button>
+                </div>
+
+                <div class="nav-btns">
+                    <a href="index.html" class="btn btn-outline">🏠 Home</a>
+                    <a href="login.html" class="btn btn-primary">🚀 Dashboard</a>
+                    <button class="theme-switch"></button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="doc-hero">
+        <div class="doc-badge">📚 Official Documentation & Manual</div>
+        
+        <!-- Bangla Hero -->
+        <div class="lang-content-bn">
+            <h1>ফেসবুক পারমিশন ও গ্রাফ এপিআই গাইড</h1>
+            <p>ফেসবুক পেজ কানেকশন, বিজনেস অ্যাপ টাইপ, Graph API Explorer ম্যানুয়াল পারমিশন এবং কমেন্ট অটো-রিপ্লাই সেটআপের সম্পূর্ণ অফিশিয়াল নির্দেশিকা।</p>
+        </div>
+        <!-- English Hero -->
+        <div class="lang-content-en">
+            <h1>Facebook Integration & Graph API Guide</h1>
+            <p>Complete official guide for Facebook Business App setup, Graph API Explorer permissions, Webhooks, and Comment Auto-Reply automation.</p>
+        </div>
+    </section>
+
+    <!-- Content Container -->
+    <div class="doc-container">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="doc-sidebar">
+            <div class="sidebar-title">📑 Quick Navigation</div>
+            <ul class="sidebar-nav">
+                <li><a href="#manual-setup" class="active">📘 <span class="lang-content-bn">ম্যানুয়াল অ্যাপ সেটআপ</span><span class="lang-content-en">Manual App Setup</span></a></li>
+                <li><a href="#explorer-setup">🛠️ <span class="lang-content-bn">Graph API Explorer</span><span class="lang-content-en">Graph API Explorer</span></a></li>
+                <li><a href="#permissions-list">🔑 <span class="lang-content-bn">পারমিশন লিস্ট ও কাজ</span><span class="lang-content-en">Permission List & Scopes</span></a></li>
+                <li><a href="#comment-permissions">💬 <span class="lang-content-bn">কমেন্ট অটো-রিপ্লাই গাইড</span><span class="lang-content-en">Comment Auto-Reply</span></a></li>
+                <li><a href="#english-reference">🌐 <span class="lang-content-bn">টেকনিক্যাল রেফারেন্স</span><span class="lang-content-en">Technical Reference</span></a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="doc-main">
+
+            <!-- Section 1: Facebook Manual Integration Setup -->
+            <section id="manual-setup" class="doc-card">
+                <div class="doc-card-header">
+                    <div class="doc-icon">📘</div>
+                    <div>
+                        <h2>
+                            <span class="lang-content-bn">১. ফেসবুক পেজ পারমিশন — ম্যানুয়াল সেটআপ (Step-by-Step)</span>
+                            <span class="lang-content-en">1. Facebook Page Permission — Manual Setup Guide</span>
+                        </h2>
+                        <p style="font-size:13px;color:var(--gray);margin-top:2px;">
+                            <span class="lang-content-bn">কীভাবে ফেসবুক ডেভেলপার প্যানেলে ম্যানুয়ালি আপনার পেজ ও অ্যাপ কানেক্ট করবেন।</span>
+                            <span class="lang-content-en">Step-by-step instructions to configure Meta Developer Console and Webhooks.</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- CRITICAL BUSINESS APP WARNING -->
+                <div class="doc-alert-danger">
+                    <strong>🚨 ⚠️ আবশ্যক শর্ত (App Type MUST be Business):</strong><br>
+                    <span class="lang-content-bn">
+                        ফেসবুক অ্যাপ তৈরির সময় App Type অবশ্যই <strong>"Business"</strong> নির্বাচন করতে হবে! "Business" টাইপ সিলেক্ট না করলে ফেসবুক মেসেঞ্জার ও পেজ প্রোডাক্ট যুক্ত হবে না এবং সিস্টেমে পেজের মেসেজ/কমেন্ট এপিআই কাজ করবে না।
+                    </span>
+                    <span class="lang-content-en">
+                        App Type MUST be selected as <strong>"Business"</strong> during app creation! Non-business app types do NOT support Page Messenger API or Webhooks subscription.
+                    </span>
+                </div>
+
+                <!-- BANGLA STEPS -->
+                <ol class="steps-list lang-content-bn">
+                    <li>
+                        <strong>Facebook Developers-এ লগইন করুন:</strong><br>
+                        সরাসরি <a href="https://developers.facebook.com" target="_blank" style="color:var(--gold);text-decoration:underline;">developers.facebook.com</a>-এ প্রবেশ করুন এবং আপনার ফেসবুক অ্যাকাউন্ট দিয়ে লগইন করে <strong>My Apps -> Create App</strong>-এ ক্লিক করুন।
+                    </li>
+                    <li>
+                        <strong>Business App Type নির্বাচন করুন (বাধ্যতামূলক):</strong><br>
+                        App type হিসেবে অবশ্যই <strong>"Business"</strong> নির্বাচন করুন এবং আপনার অ্যাপের নাম দিন (যেমন: <em>My Business Bot</em>)।
+                    </li>
+                    <li>
+                        <strong>Product যোগ করুন (Facebook Login for Business & Webhooks):</strong><br>
+                        Add Products থেকে <strong>Facebook Login for Business</strong> এবং <strong>Webhooks</strong> প্রোডাক্ট দুটি যুক্ত করুন।
+                    </li>
+                    <li>
+                        <strong>Webhook Callback URL এবং Verify Token দিন:</strong><br>
+                        ইনসাফ এআই ড্যাশবোর্ডের Facebook Settings থেকে আপনার ইউনিক Callback URL ও Verify Token কপি করে ফেসবুক Webhooks-এ বসান।
+                    </li>
+                    <li>
+                        <strong>ম্যানুয়াল পারমিশন অন করুন:</strong><br>
+                        App Review -> Permissions and Features সেকশনে গিয়ে নিচের প্রয়োজনীয় পারমিশনগুলো রিকোয়েস্ট বা অনুমোদন দিন।
+                    </li>
+                </ol>
+
+                <!-- ENGLISH STEPS -->
+                <ol class="steps-list lang-content-en">
+                    <li>
+                        <strong>Log in to Facebook Developers:</strong><br>
+                        Navigate to <a href="https://developers.facebook.com" target="_blank" style="color:var(--gold);text-decoration:underline;">developers.facebook.com</a> and click <strong>My Apps -> Create App</strong>.
+                    </li>
+                    <li>
+                        <strong>Select Business App Type (Mandatory):</strong><br>
+                        Choose <strong>"Business"</strong> as your app type and assign your app name (e.g. <em>My Business Bot</em>).
+                    </li>
+                    <li>
+                        <strong>Add Products (Facebook Login for Business & Webhooks):</strong><br>
+                        Add <strong>Facebook Login for Business</strong> and <strong>Webhooks</strong> products from the Meta dashboard.
+                    </li>
+                    <li>
+                        <strong>Configure Webhook Callback URL & Verify Token:</strong><br>
+                        Copy your Callback URL and Verify Token from Insaf AI Facebook Settings into the Meta Webhook configuration panel.
+                    </li>
+                    <li>
+                        <strong>Grant Required Permissions:</strong><br>
+                        In App Review -> Permissions and Features, grant the necessary Page permissions listed below.
+                    </li>
+                </ol>
+            </section>
+
+            <!-- Section 2: Graph API Explorer Guide -->
+            <section id="explorer-setup" class="doc-card">
+                <div class="doc-card-header">
+                    <div class="doc-icon">🛠️</div>
+                    <div>
+                        <h2>
+                            <span class="lang-content-bn">২. Graph API Explorer দিয়ে সহজে পারমিশন ও অ্যাক্সেস টোকেন জেনারেট</span>
+                            <span class="lang-content-en">2. Graph API Explorer — Testing & Token Generation Guide</span>
+                        </h2>
+                        <p style="font-size:13px;color:var(--gray);margin-top:2px;">
+                            <span class="lang-content-bn">মেটার অফিশিয়াল টুল ব্যবহার করে ফেসবুক পেজ ও কমেন্ট পারমিশন দ্রুত চেক করার নিয়ম।</span>
+                            <span class="lang-content-en">How to use Meta's official Graph API Explorer tool to grant and test permissions.</span>
+                        </p>
+                    </div>
+                </div>
+
+                <ol class="steps-list lang-content-bn">
+                    <li>
+                        <strong>Graph API Explorer টুলে প্রবেশ করুন:</strong><br>
+                        ব্রাউজারে সরাসরি <a href="https://developers.facebook.com/tools/explorer/" target="_blank" style="color:var(--gold);text-decoration:underline;">developers.facebook.com/tools/explorer</a> লিঙ্কটি অন করুন।
+                    </li>
+                    <li>
+                        <strong>Meta App নির্বাচন করুন:</strong><br>
+                        ডানপাশের **Meta App** ড্রপডাউন থেকে আপনার তৈরি করা Business App টি সিলেক্ট করুন।
+                    </li>
+                    <li>
+                        <strong>Permissions যুক্ত করুন:</strong><br>
+                        ডানপাশের **Permissions** সেকশনের **Add a Permission** ড্রপডাউন থেকে নিচের ৫টি পারমিশন একটি একটি করে সিলেক্ট করুন:
+                        <ul style="margin:10px 0 10px 20px;color:var(--gold);font-family:'Fira Code',monospace;">
+                            <li>• pages_show_list</li>
+                            <li>• pages_messaging</li>
+                            <li>• pages_read_engagement</li>
+                            <li>• pages_manage_metadata</li>
+                            <li>• pages_manage_posts</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Get Page Access Token সিলেক্ট করুন:</strong><br>
+                        **User or Page** ড্রপডাউনে ক্লিক করে **Get Page Access Token** অপশনে প্রেস করুন এবং আপনার যে পেজে ইনবক্স ও কমেন্ট বট চালাবেন সেই পেজটি সিলেক্ট করুন।
+                    </li>
+                    <li>
+                        <strong>Generate Access Token দিন:</strong><br>
+                        নীল রঙের **Generate Access Token** বাটনে ক্লিক করুন। স্ক্রিনে ফেসবুক পপ-আপ আসলে পেজের সমস্ত পারমিশন **Continue** দিয়ে সেভ করুন।
+                    </li>
+                </ol>
+
+                <ol class="steps-list lang-content-en">
+                    <li>
+                        <strong>Open Graph API Explorer Tool:</strong><br>
+                        Open <a href="https://developers.facebook.com/tools/explorer/" target="_blank" style="color:var(--gold);text-decoration:underline;">developers.facebook.com/tools/explorer</a> in your browser.
+                    </li>
+                    <li>
+                        <strong>Select Meta App:</strong><br>
+                        Select your created Meta Business App from the top-right **Meta App** dropdown menu.
+                    </li>
+                    <li>
+                        <strong>Add Required Permissions:</strong><br>
+                        Under **Permissions**, click **Add a Permission** and select the following 5 permissions:
+                        <ul style="margin:10px 0 10px 20px;color:var(--gold);font-family:'Fira Code',monospace;">
+                            <li>• pages_show_list</li>
+                            <li>• pages_messaging</li>
+                            <li>• pages_read_engagement</li>
+                            <li>• pages_manage_metadata</li>
+                            <li>• pages_manage_posts</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Select Get Page Access Token:</strong><br>
+                        Click the **User or Page** dropdown, choose **Get Page Access Token**, and select your target Facebook Page.
+                    </li>
+                    <li>
+                        <strong>Generate Access Token:</strong><br>
+                        Click **Generate Access Token**, review the Facebook OAuth popup prompt, and confirm all permissions.
+                    </li>
+                </ol>
+            </section>
+
+            <!-- Section 3: Permission List & Brackets -->
+            <section id="permissions-list" class="doc-card">
+                <div class="doc-card-header">
+                    <div class="doc-icon">🔑</div>
+                    <div>
+                        <h2>
+                            <span class="lang-content-bn">৩. ফেসবুক পারমিশন লিস্ট ও ব্র্যাকেটে কাজের বিবরণ</span>
+                            <span class="lang-content-en">3. Facebook Permission List & Capability Brackets</span>
+                        </h2>
+                        <p style="font-size:13px;color:var(--gray);margin-top:2px;">
+                            <span class="lang-content-bn">প্রতিটি ফেসবুক পারমিশনের নাম, ব্র্যাকেটে কাজ এবং ব্যবহারের উদ্দেশ্য।</span>
+                            <span class="lang-content-en">Detailed breakdown of required scopes, bracketed functions, and use cases.</span>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="perm-grid">
+                    
+                    <!-- Item 1 -->
+                    <div class="perm-item">
+                        <div class="perm-header">
+                            <span class="perm-name">pages_show_list</span>
+                            <span class="perm-bracket">
+                                <span class="lang-content-bn">[স্বয়ংক্রিয় পেজ শনাক্তকরণ ও নির্বাচন]</span>
+                                <span class="lang-content-en">[Page Discovery & Selection]</span>
+                            </span>
+                        </div>
+                        <div class="perm-desc">
+                            <span class="lang-content-bn">আপনার ফেসবুক অ্যাকাউন্টের অধীনে থাকা সমস্ত ফেসবুক পেজের তালিকা প্রদর্শন করে, যেন আপনি বেছে নিতে পারেন কোন পেজটিতে এআই চ্যাটবট যুক্ত করবেন।</span>
+                            <span class="lang-content-en">Lists all Facebook Pages managed by your account to allow seamless selection of which page to connect to Insaf AI.</span>
+                        </div>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div class="perm-item">
+                        <div class="perm-header">
+                            <span class="perm-name">pages_messaging</span>
+                            <span class="perm-bracket">
+                                <span class="lang-content-bn">[ইনবক্স মেসেজিং অটোমেশন ও চ্যাট]</span>
+                                <span class="lang-content-en">[Messenger Automation & Live Chat]</span>
+                            </span>
+                        </div>
+                        <div class="perm-desc">
+                            <span class="lang-content-bn">মেসেঞ্জারে কাস্টমারদের পাঠানো মেসেজ গ্রহণ করা এবং AI এর মাধ্যমে রিয়েলটাইম স্বয়ংক্রিয় উত্তর, প্রডাক্ট কার্ড ও অর্ডার নেওয়ার অনুমতি দেয়।</span>
+                            <span class="lang-content-en">Allows receiving customer messages in Messenger and sending real-time automated AI replies, product catalog cards, and order confirmations.</span>
+                        </div>
+                    </div>
+
+                    <!-- Item 3 -->
+                    <div class="perm-item">
+                        <div class="perm-header">
+                            <span class="perm-name">pages_read_engagement</span>
+                            <span class="perm-bracket">
+                                <span class="lang-content-bn">[পোস্ট ও কমেন্ট ইঙ্গেজমেন্ট রিড]</span>
+                                <span class="lang-content-en">[Post & Comment Reading]</span>
+                            </span>
+                        </div>
+                        <div class="perm-desc">
+                            <span class="lang-content-bn">আপনার ফেসবুক পেজের পোস্টের কমেন্ট, রিঅ্যাকশন এবং কাস্টমারদের দেওয়া প্রতিক্রিয়া পড়ার অনুমতি দেয়।</span>
+                            <span class="lang-content-en">Grants read access to post comments, reactions, and customer engagement metrics on your Facebook Page.</span>
+                        </div>
+                    </div>
+
+                    <!-- Item 4 -->
+                    <div class="perm-item">
+                        <div class="perm-header">
+                            <span class="perm-name">pages_manage_metadata</span>
+                            <span class="perm-bracket">
+                                <span class="lang-content-bn">[ওয়েব হুক সেটআপ ও ইভেন্ট নোটিফিকেশন]</span>
+                                <span class="lang-content-en">[Webhook Configuration & Realtime Events]</span>
+                            </span>
+                        </div>
+                        <div class="perm-desc">
+                            <span class="lang-content-bn">ফেসবুক পেজে নতুন মেসেজ বা কমেন্ট আসামাত্র সাথে সাথে ওয়েবহুক (Webhook) সিস্টেমে মেসেজ রিসেভ করার অনুমতি দেয়।</span>
+                            <span class="lang-content-en">Subscribes webhooks to real-time Page events so new customer messages and comments are instantly received.</span>
+                        </div>
+                    </div>
+
+                    <!-- Item 5 -->
+                    <div class="perm-item">
+                        <div class="perm-header">
+                            <span class="perm-name">pages_manage_posts</span>
+                            <span class="perm-bracket">
+                                <span class="lang-content-bn">[কমেন্টে পাবলিক রিপ্লাই দেওয়া]</span>
+                                <span class="lang-content-en">[Public Comment Publishing]</span>
+                            </span>
+                        </div>
+                        <div class="perm-desc">
+                            <span class="lang-content-bn">পেজের যেকোনো অফার পোস্টের নিচে কাস্টমারদের কমেন্টের নিচে পেজের পক্ষ থেকে পাবলিক রিপ্লাই দেওয়ার অনুমতি দেয়।</span>
+                            <span class="lang-content-en">Allows publishing public replies under customer comments on your Facebook Page posts.</span>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Section 4: Comment Auto-Reply Guide -->
+            <section id="comment-permissions" class="doc-card">
+                <div class="doc-card-header">
+                    <div class="doc-icon">💬</div>
+                    <div>
+                        <h2>
+                            <span class="lang-content-bn">৪. কমেন্ট অটো-রিপ্লাই সেটআপ ও পারমিশন গাইড</span>
+                            <span class="lang-content-en">4. Comment Auto-Reply & Private DM Setup Guide</span>
+                        </h2>
+                        <p style="font-size:13px;color:var(--gray);margin-top:2px;">
+                            <span class="lang-content-bn">কমেন্ট অটো-রিপ্লাই চালু করতে কি কি পারমিশন লাগে এবং কীভাবে কাজ করে।</span>
+                            <span class="lang-content-en">How public comment auto-replies and instant private inbox messages work.</span>
+                        </p>
+                    </div>
+                </div>
+
+                <h3>
+                    <span class="lang-content-bn">📌 কমেন্ট অটো-রিপ্লাইয়ের জন্য প্রয়োজনীয় পারমিশন:</span>
+                    <span class="lang-content-en">📌 Required Permissions for Comment Automation:</span>
+                </h3>
+                
+                <div class="perm-grid" style="margin-bottom:20px;">
+                    <div class="perm-item">
+                        <div class="perm-header">
+                            <span class="perm-name">1. pages_read_engagement</span>
+                            <span class="perm-bracket">
+                                <span class="lang-content-bn">[কমেন্ট রিড করা]</span>
+                                <span class="lang-content-en">[Read Post Comments]</span>
+                            </span>
+                        </div>
+                        <div class="perm-desc">
+                            <span class="lang-content-bn">পোস্টে কাস্টমারের নতুন কমেন্ট পড়তে ব্যবহৃত হয়।</span>
+                            <span class="lang-content-en">Reads new comments posted on your page posts.</span>
+                        </div>
+                    </div>
+                    <div class="perm-item">
+                        <div class="perm-header">
+                            <span class="perm-name">2. pages_manage_posts</span>
+                            <span class="perm-bracket">
+                                <span class="lang-content-bn">[পাবলিক কমেন্ট রিপ্লাই]</span>
+                                <span class="lang-content-en">[Public Comment Reply]</span>
+                            </span>
+                        </div>
+                        <div class="perm-desc">
+                            <span class="lang-content-bn">কমেন্টের ঠিক নিচে "Inbox check koren" লিখে পাবলিক উত্তর দেওয়া।</span>
+                            <span class="lang-content-en">Publishes public replies under user comments.</span>
+                        </div>
+                    </div>
+                    <div class="perm-item">
+                        <div class="perm-header">
+                            <span class="perm-name">3. pages_messaging</span>
+                            <span class="perm-bracket">
+                                <span class="lang-content-bn">[প্রাইভেট ইনবক্স মেসেজ]</span>
+                                <span class="lang-content-en">[Private DM Message]</span>
+                            </span>
+                        </div>
+                        <div class="perm-desc">
+                            <span class="lang-content-bn">কমেন্টকারী কাস্টমারের ইনবক্সে সরাসরি দাম ও অর্ডারের লিংক পাঠানো।</span>
+                            <span class="lang-content-en">Sends direct private messages to comment author's inbox.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>
+                    <span class="lang-content-bn">⚙️ কীভাবে সেটআপ করবেন?</span>
+                    <span class="lang-content-en">⚙️ How to Configure in Insaf AI:</span>
+                </h3>
+                <ol class="steps-list lang-content-bn">
+                    <li>ড্যাশবোর্ডের <strong>Comment Automation</strong> পেজে যান।</li>
+                    <li>যে ফেসবুক পেজে কমেন্ট অটো-রিপ্লাই চালু করতে চান সেটি সিলেক্ট করুন।</li>
+                    <li><strong>Public Reply Template</strong> অপশনে যেমন: <em>"Assalamu Alaikum! Inbox check koren vaiya 🙏"</em> টিউন করুন।</li>
+                    <li><strong>Send Private Message</strong> অপশনে টিক দিন, যেন কাস্টমারের ইনবক্সে দামের ডিটেইলস চলে যায়।</li>
+                </ol>
+                <ol class="steps-list lang-content-en">
+                    <li>Navigate to the <strong>Comment Automation</strong> section in Insaf AI dashboard.</li>
+                    <li>Select the target Facebook Page where you want auto-replies enabled.</li>
+                    <li>Set up your <strong>Public Reply Template</strong> (e.g. <em>"Hello! Please check your inbox for details 🙏"</em>).</li>
+                    <li>Enable <strong>Send Private Message</strong> to automatically send product prices & order links to customer Messenger.</li>
+                </ol>
+            </section>
+
+            <!-- Section 5: English Technical Reference Guide -->
+            <section id="english-reference" class="doc-card">
+                <div class="doc-card-header">
+                    <div class="doc-icon">🌐</div>
+                    <div>
+                        <h2>5. Facebook Permission Technical Reference (English Specs)</h2>
+                        <p style="font-size:13px;color:var(--gray);margin-top:2px;">Complete technical scope, capabilities, and capability reference for developers and Facebook App reviewers.</p>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="eng-table">
+                        <thead>
+                            <tr>
+                                <th>Permission Scope</th>
+                                <th>Access Type</th>
+                                <th>Core Functionality</th>
+                                <th>System Capability</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code style="color:#38bdf8;">pages_show_list</code></td>
+                                <td>User Access Token</td>
+                                <td>Retrieve User Pages</td>
+                                <td>Fetches all Facebook pages administered by the user for page selection.</td>
+                            </tr>
+                            <tr>
+                                <td><code style="color:#38bdf8;">pages_messaging</code></td>
+                                <td>Page Access Token</td>
+                                <td>Messenger Automation</td>
+                                <td>Enables real-time bi-directional conversation with AI responses & order forms.</td>
+                            </tr>
+                            <tr>
+                                <td><code style="color:#38bdf8;">pages_read_engagement</code></td>
+                                <td>Page Access Token</td>
+                                <td>Post & Comment Reading</td>
+                                <td>Listens to post comments, reactions, and engagement metrics via webhooks.</td>
+                            </tr>
+                            <tr>
+                                <td><code style="color:#38bdf8;">pages_manage_metadata</code></td>
+                                <td>Page Access Token</td>
+                                <td>Webhook Subscriptions</td>
+                                <td>Subscribes webhooks to real-time feed, comment, and messaging events.</td>
+                            </tr>
+                            <tr>
+                                <td><code style="color:#38bdf8;">pages_manage_posts</code></td>
+                                <td>Page Access Token</td>
+                                <td>Public Comment Replying</td>
+                                <td>Publishes public comment replies on behalf of the page under user posts.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <style>
+/* ========== PREMIUM FOOTER ========== */
+.site-footer {
+    position: relative;
+    background: linear-gradient(180deg, var(--dark, #0a0a1a) 0%, #06060f 100%);
+    border-top: 1px solid var(--border, rgba(255,255,255,0.08));
+    padding: 72px 24px 0;
+    overflow: hidden;
+}
+.site-footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 300px;
+    background: radial-gradient(ellipse, rgba(245,166,35,0.06), transparent 70%);
+    pointer-events: none;
+}
+.footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    gap: 48px;
+}
+.footer-col h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-bottom: 24px;
+    position: relative;
+    padding-bottom: 12px;
+}
+.footer-col h4::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 32px;
+    height: 3px;
+    border-radius: 2px;
+    background: linear-gradient(135deg, var(--gold, #f5a623), #e09500);
+}
+
+/* About Column */
+.footer-about-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+.footer-about-logo img {
+    height: 32px;
+    object-fit: contain;
+}
+.footer-about-logo span {
+    font-weight: 800;
+    font-size: 18px;
+    color: #fff;
+}
+.footer-about-desc {
+    font-size: 14px;
+    color: var(--gray, #94a3b8);
+    line-height: 1.8;
+    margin-bottom: 20px;
+}
+.footer-social {
+    display: flex;
+    gap: 10px;
+}
+.footer-social a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: var(--gray, #94a3b8);
+    font-size: 16px;
+    transition: all 0.3s;
+}
+.footer-social a:hover {
+    background: rgba(245,166,35,0.15);
+    border-color: rgba(245,166,35,0.3);
+    color: var(--gold, #f5a623);
+    transform: translateY(-2px);
+}
+
+/* Links Column */
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.footer-links li {
+    margin-bottom: 12px;
+}
+.footer-links a {
+    font-size: 14px;
+    color: var(--gray, #94a3b8);
+    transition: all 0.25s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+.footer-links a::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    transition: background 0.25s;
+}
+.footer-links a:hover {
+    color: var(--gold, #f5a623);
+    transform: translateX(4px);
+}
+.footer-links a:hover::before {
+    background: var(--gold, #f5a623);
+}
+
+/* Contact Column */
+.footer-contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+.footer-contact-icon {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: rgba(124,58,237,0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+.footer-contact-text {
+    font-size: 14px;
+    color: var(--gray, #94a3b8);
+    line-height: 1.6;
+}
+.footer-contact-text a {
+    color: var(--gray, #94a3b8);
+    transition: color 0.25s;
+}
+.footer-contact-text a:hover {
+    color: var(--gold, #f5a623);
+}
+
+/* Footer Bottom Bar */
+.footer-bottom {
+    max-width: 1200px;
+    margin: 48px auto 0;
+    padding: 24px 0;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.footer-bottom p {
+    font-size: 13px;
+    color: rgba(148,163,184,0.6);
+}
+.footer-bottom-links {
+    display: flex;
+    gap: 24px;
+}
+.footer-bottom-links a {
+    font-size: 13px;
+    color: rgba(148,163,184,0.6);
+    transition: color 0.25s;
+}
+.footer-bottom-links a:hover {
+    color: var(--gold, #f5a623);
+}
+
+/* ========== MOBILE RESPONSIVE ========== */
+@media (max-width: 768px) {
+    .footer-inner {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+    }
+    .footer-bottom-links {
+        justify-content: center;
+    }
+}
+@media (min-width: 769px) and (max-width: 1024px) {
+    .footer-inner {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+</style>
+
+<footer class="site-footer">
+    <div class="footer-inner">
+
+        
+        <div class="footer-col">
+            <div class="footer-about-logo">
+                                    <img src="assets/images/site_logo_1781517970.png" alt="Insaf AI">
+                                                    <span>Insaf AI</span>
+                            </div>
+            <p class="footer-about-desc">
+                Automate your customer support with AI-powered agents for Facebook, WhatsApp & Instagram. Manage orders, answer questions, and boost sales — 24/7 with zero effort.
+            </p>
+            <div class="footer-social">
+                <a href="#" title="Facebook" aria-label="Facebook">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                </a>
+                <a href="#" title="Instagram" aria-label="Instagram">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                </a>
+                <a href="#" title="WhatsApp" aria-label="WhatsApp">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                </a>
+            </div>
+        </div>
+
+        
+        <div class="footer-col">
+            <h4>Important Links</h4>
+            <ul class="footer-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="blog.html">Blogs</a></li>
+                <li><a href="documentation.html">Docs</a></li>
+                <li><a href="login.html">Login</a></li>
+                                <li><a href="register.html">Register</a></li>
+                                <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                <li><a href="terms.html">Terms of Service</a></li>
+            </ul>
+        </div>
+
+        
+        <div class="footer-col">
+            <h4>Contact Us</h4>
+            <div class="footer-contact-item">
+                <div class="footer-contact-icon" style="color:var(--gold, #f5a623);display:flex;align-items:center;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" stroke-width="2"/><path d="M22 6l-10 7L2 6" stroke="currentColor" stroke-width="2"/></svg>
+                </div>
+                <div class="footer-contact-text">
+                    <a href="mailto:support@insafboost.com">support@insafboost.com</a>
+                </div>
+            </div>
+            <div class="footer-contact-item">
+                <div class="footer-contact-icon" style="color:var(--gold, #f5a623);display:flex;align-items:center;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" stroke="currentColor" stroke-width="2"/></svg>
+                </div>
+                <div class="footer-contact-text">
+                    <a href="tel:01969598055">01969598055</a>
+                </div>
+            </div>
+            <div class="footer-contact-item">
+                <div class="footer-contact-icon" style="color:var(--gold, #f5a623);display:flex;align-items:center;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 2a8 8 0 00-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 00-8-8z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2"/></svg>
+                </div>
+                <div class="footer-contact-text">
+                    Saya Bazar, Palima, Kalihati, Tangail 1975
+                </div>
+            </div>
+            <div class="footer-contact-item">
+                <div class="footer-contact-icon" style="color:var(--gold, #f5a623);display:flex;align-items:center;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" stroke="currentColor" stroke-width="2"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </div>
+                <div class="footer-contact-text">
+                    Trade License No: 3886297738
+                </div>
+            </div>
+            <div class="footer-contact-item">
+                <div class="footer-contact-icon" style="color:var(--gold, #f5a623);display:flex;align-items:center;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </div>
+                <div class="footer-contact-text">
+                    24/7 AI Support<br>
+                    Human Support: Sat-Thu, 10AM-6PM
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    
+    <div class="footer-bottom">
+        <p>&copy; 2026 Insaf AI. All rights reserved.</p>
+        <div class="footer-bottom-links">
+            <a href="privacy-policy.html">Privacy Policy</a>
+            <a href="terms.html">Terms of Service</a>
+            <a href="data-deletion.html">Data Deletion</a>
+        </div>
+    </div>
+</footer>
+
+    <!-- Language Switcher JavaScript -->
+    <script>
+    function switchLanguage(lang) {
+        const btnBn = document.getElementById('btnLangBn');
+        const btnEn = document.getElementById('btnLangEn');
+
+        if (lang === 'en') {
+            document.body.classList.add('lang-en');
+            btnEn.classList.add('active');
+            btnBn.classList.remove('active');
+            localStorage.setItem('docLanguage', 'en');
+        } else {
+            document.body.classList.remove('lang-en');
+            btnBn.classList.add('active');
+            btnEn.classList.remove('active');
+            localStorage.setItem('docLanguage', 'bn');
+        }
+    }
+
+    // Auto-restore language preference
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedLang = localStorage.getItem('docLanguage') || 'bn';
+        switchLanguage(savedLang);
+
+        // Mobile & Desktop Section Nav Scroll Sync
+        const navLinks = document.querySelectorAll('.sidebar-nav a');
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                const href = link.getAttribute('href');
+                if (href && href.startsWith('#')) {
+                    const targetId = href.substring(1);
+                    const targetSection = document.getElementById(targetId);
+                    if (targetSection) {
+                        e.preventDefault();
+                        const yOffset = window.innerWidth <= 992 ? -110 : -100;
+                        const y = targetSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                        window.scrollTo({ top: y, behavior: 'smooth' });
+                        navLinks.forEach(l => l.classList.remove('active'));
+                        link.classList.add('active');
+                    }
+                }
+            });
+        });
+
+        // Highlight active pill on vertical scroll
+        window.addEventListener('scroll', () => {
+            const cards = document.querySelectorAll('.doc-card');
+            cards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                if (rect.top <= 160 && rect.bottom >= 160) {
+                    const id = card.getAttribute('id');
+                    if (id) {
+                        navLinks.forEach(l => {
+                            l.classList.remove('active');
+                            if (l.getAttribute('href') === '#' + id) {
+                                l.classList.add('active');
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    });
+    </script>
+
+<script src="assets/js/supabase.min.js"></script>
+<script src="assets/js/auth-app.js"></script>
+</body>
+</html>
