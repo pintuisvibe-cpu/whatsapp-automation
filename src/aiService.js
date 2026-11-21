@@ -108,8 +108,8 @@ async function callOpenAICompatible({ provider, apiKey, model, systemInstruction
     Authorization: `Bearer ${apiKey}`
   };
   if (provider === 'openrouter') {
-    headers['HTTP-Referer'] = process.env.APP_URL || 'https://ai.insafboost.com';
-    headers['X-Title'] = 'Insaf AI WhatsApp Bot';
+    headers['HTTP-Referer'] = process.env.APP_URL || 'https://salesreplyai.codexanta.bond';
+    headers['X-Title'] = 'Sales Reply AI WhatsApp Bot';
   }
 
   const messages = [

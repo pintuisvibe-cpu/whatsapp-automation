@@ -68,7 +68,7 @@ In the **📱 WhatsApp Connection** card:
 - Note: WhatsApp does **not** trigger auto-reply for messages you send to *yourself* from the same account (`fromMe` messages are ignored to prevent infinite loops).
 - In **💬 Live WhatsApp Message Logs**, you will see:
   - The incoming customer message (`👤`)
-  - The outgoing AI reply (`🤖 Insaf AI`) along with the model used!
+  - The outgoing AI reply (`🤖 Sales Reply AI`) along with the model used!
 
 ---
 

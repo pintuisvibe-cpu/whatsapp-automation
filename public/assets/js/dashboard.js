@@ -1,5 +1,5 @@
 /* ==========================================================
-   Insaf AI — WhatsApp QR & AI Auto-Reply Dashboard Logic
+   Sales Reply AI — WhatsApp QR & AI Auto-Reply Dashboard Logic
    ========================================================== */
 (function () {
     'use strict';
@@ -179,7 +179,7 @@
             item.className = 'msg-item ' + (m.direction === 'incoming' ? 'msg-incoming' : 'msg-outgoing');
             var who = m.direction === 'incoming'
                 ? ('👤 ' + (m.sender_name || m.remote_jid.split('@')[0]))
-                : ('🤖 Insaf AI' + (m.model_used ? ' (' + m.model_used + ')' : ''));
+                : ('🤖 Sales Reply AI' + (m.model_used ? ' (' + m.model_used + ')' : ''));
             var dt = new Date(m.created_at).toLocaleString();
             item.innerHTML =
                 '<div class="msg-meta"><span>' + escapeHtml(who) + '</span><span>' + escapeHtml(dt) + '</span></div>' +
@@ -317,5 +317,182 @@
 
     document.getElementById('refreshLogsBtn').addEventListener('click', loadMessages);
 
+
+    // ================= V2: Stats / Widget / Facebook / Orders =================
+    async function loadStats() {
+        var grid = document.getElementById('statsGrid');
+        if (!grid) return;
+        try {
+            var s = await apiFetch('/api/dashboard/stats');
+            function card(label, value) {
+                return '<div style="border:1px solid var(--border,rgba(255,255,255,0.1));border-radius:10px;padding:12px;">' +
+                    '<div style="font-size:22px;font-weight:800;">' + value + '</div>' +
+                    '<div style="font-size:12px;opacity:0.75;">' + label + '</div></div>';
+            }
+            var quotaText = s.quota_limit === null ? 'Unlimited' : (s.quota_remaining + ' / ' + s.quota_limit);
+            grid.innerHTML =
+                card('Plan', s.plan.name) +
+                card('Messages (30d)', s.messages_30d) +
+                card('Orders (30d)', s.orders_30d) +
+                card('Products', s.products) +
+                card('Quota left', quotaText);
+        } catch (err) {
+            grid.innerHTML = '<div style="opacity:0.7;font-size:13px;">Stats unavailable: ' + err.message + '</div>';
+        }
+    }
+
+    async function loadWidgetTokens() {
+        var list = document.getElementById('widgetTokenList');
+        if (!list) return;
+        try {
+            var res = await apiFetch('/api/widget/tokens');
+            var tokens = res.tokens || [];
+            if (!tokens.length) {
+                list.innerHTML = '<div style="opacity:0.7;font-size:13px;">No widget yet. Create one above!</div>';
+                return;
+            }
+            list.innerHTML = '';
+            tokens.forEach(function (t) {
+                var row = document.createElement('div');
+                row.style.cssText = 'display:flex;gap:8px;align-items:center;flex-wrap:wrap;border:1px solid var(--border,rgba(255,255,255,0.1));border-radius:10px;padding:10px;margin-bottom:8px;';
+                row.innerHTML = '<strong>' + t.label + '</strong>' +
+                    '<code style="font-size:11px;word-break:break-all;">' + t.token + '</code>' +
+                    '<span style="font-size:11px;opacity:0.7;">' + (t.is_active ? 'Active' : 'Inactive') + '</span>' +
+                    '<button type="button" class="btn-sm btn-ghost" data-act="copy">Copy embed</button>' +
+                    '<button type="button" class="btn-sm btn-ghost" data-act="toggle">' + (t.is_active ? 'Disable' : 'Enable') + '</button>' +
+                    '<button type="button" class="btn-sm btn-danger" data-act="del">Delete</button>';
+                row.querySelector('[data-act="copy"]').addEventListener('click', function () {
+                    var snippet = '<script src="' + window.location.origin + '/js/widget.js" data-token="' + t.token + '"><\/script>';
+                    var box = document.getElementById('widgetSnippetBox');
+                    box.style.display = 'block';
+                    box.textContent = snippet;
+                    if (navigator.clipboard) navigator.clipboard.writeText(snippet).catch(function () {});
+                    showToast('Embed snippet copied!');
+                });
+                row.querySelector('[data-act="toggle"]').addEventListener('click', async function () {
+                    try {
+                        await apiFetch('/api/widget/tokens/' + t.id, { method: 'PUT', body: JSON.stringify({ is_active: !t.is_active }) });
+                        loadWidgetTokens();
+                    } catch (err) { showToast(err.message, true); }
+                });
+                row.querySelector('[data-act="del"]').addEventListener('click', async function () {
+                    try {
+                        await apiFetch('/api/widget/tokens/' + t.id, { method: 'DELETE' });
+                        loadWidgetTokens();
+                    } catch (err) { showToast(err.message, true); }
+                });
+                list.appendChild(row);
+            });
+        } catch (err) {
+            list.innerHTML = '<div style="opacity:0.7;font-size:13px;">' + err.message + '</div>';
+        }
+    }
+
+    async function loadFbPages() {
+        var list = document.getElementById('fbPageList');
+        if (!list) return;
+        try {
+            var res = await apiFetch('/api/facebook/pages');
+            var pages = res.pages || [];
+            if (!pages.length) {
+                list.innerHTML = '<div style="opacity:0.7;font-size:13px;">No Facebook page connected yet.</div>';
+                return;
+            }
+            list.innerHTML = '';
+            pages.forEach(function (p) {
+                var row = document.createElement('div');
+                row.style.cssText = 'display:flex;gap:8px;align-items:center;flex-wrap:wrap;border:1px solid var(--border,rgba(255,255,255,0.1));border-radius:10px;padding:10px;margin-bottom:8px;';
+                row.innerHTML = '<strong>' + (p.page_name || p.page_id) + '</strong>' +
+                    '<code style="font-size:11px;">' + p.page_id + '</code>' +
+                    '<span style="font-size:11px;opacity:0.7;">' + (p.is_active ? 'Active' : 'Inactive') + '</span>' +
+                    '<button type="button" class="btn-sm btn-danger">Remove</button>';
+                row.querySelector('button').addEventListener('click', async function () {
+                    try {
+                        await apiFetch('/api/facebook/pages/' + p.id, { method: 'DELETE' });
+                        loadFbPages();
+                    } catch (err) { showToast(err.message, true); }
+                });
+                list.appendChild(row);
+            });
+        } catch (err) {
+            list.innerHTML = '<div style="opacity:0.7;font-size:13px;">' + err.message + '</div>';
+        }
+    }
+
+    async function loadOrders() {
+        var list = document.getElementById('orderList');
+        if (!list) return;
+        try {
+            var res = await apiFetch('/api/orders?limit=50');
+            var orders = res.orders || [];
+            if (!orders.length) {
+                list.innerHTML = '<div style="opacity:0.7;font-size:13px;">No orders yet.</div>';
+                return;
+            }
+            list.innerHTML = '';
+            orders.forEach(function (o) {
+                var row = document.createElement('div');
+                row.style.cssText = 'border:1px solid var(--border,rgba(255,255,255,0.1));border-radius:10px;padding:10px;margin-bottom:8px;font-size:13px;';
+                var itemsText = Array.isArray(o.items) ? o.items.map(function (i) { return (i.name || i) + ' x' + (i.qty || 1); }).join(', ') : '';
+                row.innerHTML = '<strong>' + (o.customer_name || 'Customer') + '</strong> · ' + (o.customer_phone || '') +
+                    ' · <span style="opacity:0.8;">' + (o.total_amount || '') + '</span>' +
+                    '<div style="opacity:0.8;margin-top:4px;">' + itemsText + (o.customer_address ? ' · ' + o.customer_address : '') + '</div>' +
+                    '<div style="margin-top:6px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;">' +
+                    '<select class="form-control" style="width:auto;padding:4px 8px;font-size:12px;">' +
+                    ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'].map(function (st) {
+                        return '<option value="' + st + '"' + (o.status === st ? ' selected' : '') + '>' + st + '</option>';
+                    }).join('') + '</select>' +
+                    '<span style="font-size:11px;opacity:0.6;">' + new Date(o.created_at).toLocaleString() + '</span></div>';
+                row.querySelector('select').addEventListener('change', async function (e) {
+                    try {
+                        await apiFetch('/api/orders/' + o.id, { method: 'PUT', body: JSON.stringify({ status: e.target.value }) });
+                        showToast('Order updated!');
+                    } catch (err) { showToast(err.message, true); }
+                });
+                list.appendChild(row);
+            });
+        } catch (err) {
+            list.innerHTML = '<div style="opacity:0.7;font-size:13px;">' + err.message + '</div>';
+        }
+    }
+
+    function bindV2() {
+        var cw = document.getElementById('createWidgetBtn');
+        if (cw) cw.addEventListener('click', async function () {
+            try {
+                await apiFetch('/api/widget/tokens', {
+                    method: 'POST',
+                    body: JSON.stringify({ label: document.getElementById('widgetLabel').value.trim() || 'Default Widget' })
+                });
+                showToast('Widget token created!');
+                loadWidgetTokens();
+            } catch (err) { showToast(err.message, true); }
+        });
+        var fbForm = document.getElementById('fbPageForm');
+        if (fbForm) fbForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            try {
+                await apiFetch('/api/facebook/pages', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        page_id: document.getElementById('fbPageId').value.trim(),
+                        page_name: document.getElementById('fbPageName').value.trim(),
+                        page_access_token: document.getElementById('fbPageToken').value.trim()
+                    })
+                });
+                fbForm.reset();
+                showToast('Facebook page connected!');
+                loadFbPages();
+            } catch (err) { showToast(err.message, true); }
+        });
+        var ro = document.getElementById('refreshOrdersBtn');
+        if (ro) ro.addEventListener('click', loadOrders);
+        loadStats();
+        loadWidgetTokens();
+        loadFbPages();
+        loadOrders();
+    }
+
     init();
+    bindV2();
 })();

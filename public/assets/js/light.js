@@ -1,18 +1,18 @@
 /* ==========================================================
-   Insaf AI — Theme Engine  (light.js)
+   Sales Reply AI — Theme Engine  (light.js)
    ----------------------------------------------------------
    • Single small file, no dependency, no build step.
-   • Stores choice in localStorage  ->  key "insaf-theme"
+   • Stores choice in localStorage  ->  key "sra-theme"
    • FUTURE DEFAULT = light  (change DEFAULT_THEME to 'dark'
      to flip the default back without touching anything else)
-   • Exposes window.InsafTheme = { get, set, toggle, mount }
-   • Emits  document -> 'insaf:themechange'  { detail:{ theme } }
+   • Exposes window.SraTheme = { get, set, toggle, mount }
+   • Emits  document -> 'sra:themechange'  { detail:{ theme } }
      so charts / third-party widgets can restyle themselves.
    ========================================================== */
 (function (w, d) {
     'use strict';
 
-    var STORAGE_KEY   = 'insaf-theme';
+    var STORAGE_KEY   = 'sra-theme';
     var DEFAULT_THEME = 'light';       // <— future default
     var VALID         = { light: 1, dark: 1 };
 
@@ -57,7 +57,7 @@
         syncSwitches(theme);
 
         try {
-            d.dispatchEvent(new CustomEvent('insaf:themechange', { detail: { theme: theme } }));
+            d.dispatchEvent(new CustomEvent('sra:themechange', { detail: { theme: theme } }));
         } catch (e) {}
 
         return theme;
@@ -134,7 +134,7 @@
         if (e.key === STORAGE_KEY && VALID[e.newValue]) apply(e.newValue, true);
     });
 
-    w.InsafTheme = {
+    w.SraTheme = {
         get: current,
         set: set,
         toggle: toggle,

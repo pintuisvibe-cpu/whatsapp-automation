@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WhatsApp AI Automation Dashboard — Insaf AI</title>
+    <title>WhatsApp AI Automation Dashboard — Sales Reply AI</title>
     <link rel="icon" href="assets/images/site_icon_1781517971.png">
     <link rel="stylesheet" href="assets/css/fonts.css">
     <link rel="stylesheet" href="assets/css/common.css">
@@ -137,8 +137,8 @@
 <header class="dash-header">
     <div class="dash-header-inner">
         <a href="index.html" class="dash-brand">
-            <img src="assets/images/site_logo_1781517970.png" alt="Insaf AI">
-            <span>Insaf AI · WhatsApp Bot</span>
+            <img src="assets/images/site_logo_1781517970.png" alt="Sales Reply AI">
+            <span>Sales Reply AI · WhatsApp Bot</span>
         </a>
         <div class="dash-user-bar">
             <span class="user-pill" id="userEmailPill">Loading...</span>
@@ -269,7 +269,7 @@
 
                     <div class="form-group">
                         <label class="form-label">Business Knowledge / Delivery &amp; Payment Info</label>
-                        <textarea id="aiKnowledge" class="form-control" placeholder="Example: Delivery charge 60 Tk inside Dhaka, 120 Tk outside Dhaka. Cash on delivery available. Hotline: 01969598055."></textarea>
+                        <textarea id="aiKnowledge" class="form-control" placeholder="Example: Delivery charge 60 Tk inside Dhaka, 120 Tk outside Dhaka. Cash on delivery available."></textarea>
                     </div>
 
                     <div class="field-grid">
@@ -315,6 +315,46 @@
                     <div style="opacity:0.7;font-size:13px;">No messages yet. Connect WhatsApp and send a message to test!</div>
                 </div>
             </section>
+
+            <section class="dash-card">
+                <h2>📊 Analytics (Last 30 Days)</h2>
+                <p class="sub">Message volume, orders and plan quota at a glance.</p>
+                <div id="statsGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;">
+                    <div class="test-reply-box" style="display:block;">Loading...</div>
+                </div>
+            </section>
+
+            <section class="dash-card">
+                <h2>🌐 Website Live-Chat Widget</h2>
+                <p class="sub">Create a widget token, paste the embed snippet on your website, and the AI will chat with visitors 24/7.</p>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
+                    <input type="text" id="widgetLabel" class="form-control" placeholder="Widget label (e.g. Main Website)" style="flex:1;min-width:200px;">
+                    <button type="button" class="btn btn-primary btn-sm" id="createWidgetBtn">Create Widget Token</button>
+                </div>
+                <div id="widgetTokenList"></div>
+                <div id="widgetSnippetBox" class="test-reply-box" style="display:none;word-break:break-all;"></div>
+            </section>
+
+            <section class="dash-card">
+                <h2>📘 Facebook Messenger</h2>
+                <p class="sub">Connect a Facebook Page. Webhook URL: <code>/webhook/facebook</code> — setup steps are in the Documentation page.</p>
+                <form id="fbPageForm" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
+                    <input type="text" id="fbPageId" class="form-control" placeholder="Page ID" required style="flex:1;min-width:140px;">
+                    <input type="text" id="fbPageName" class="form-control" placeholder="Page name" style="flex:1;min-width:140px;">
+                    <input type="password" id="fbPageToken" class="form-control" placeholder="Page access token (optional)" style="flex:2;min-width:200px;">
+                    <button type="submit" class="btn btn-primary btn-sm">Connect Page</button>
+                </form>
+                <div id="fbPageList"></div>
+            </section>
+
+            <section class="dash-card">
+                <h2>
+                    <span>🧾 Orders</span>
+                    <button type="button" class="btn-sm btn-ghost" id="refreshOrdersBtn">Refresh</button>
+                </h2>
+                <p class="sub">Orders taken by the AI (WhatsApp / Facebook / Widget) appear here. Update status as you fulfil them.</p>
+                <div id="orderList"></div>
+            </section>
         </div>
     </div>
 </main>
@@ -323,5 +363,6 @@
 
 <script src="assets/js/supabase.min.js"></script>
 <script src="assets/js/dashboard.js"></script>
+<div style="text-align:center;padding:18px 12px 24px;font-size:12px;line-height:1.6;color:#94a3b8;opacity:.85;">&copy; 2026 Sales Reply AI — Developed by Codexanta. All rights reserved.</div>
 </body>
 </html>

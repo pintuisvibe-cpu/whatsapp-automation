@@ -1,5 +1,5 @@
 /* ==========================================================
-   Insaf AI — Live Supabase Auth & Blog Filter Client
+   Sales Reply AI — Live Supabase Auth & Blog Filter Client
    ========================================================== */
 (function () {
     'use strict';

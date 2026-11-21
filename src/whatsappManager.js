@@ -144,7 +144,7 @@ async function handleIncomingMessage(userId, sock, msg) {
     await supabaseAdmin.from('whatsapp_messages').insert({
       user_id: userId,
       remote_jid: remoteJid,
-      sender_name: 'Insaf AI',
+      sender_name: 'Sales Reply AI',
       direction: 'outgoing',
       message_text: reply,
       ai_generated: true,
@@ -193,7 +193,7 @@ export async function startWhatsAppSession(userId, { resetAuth = false } = {}) {
       auth: state,
       logger,
       printQRInTerminal: false,
-      browser: Browsers.ubuntu('Insaf AI'),
+      browser: Browsers.ubuntu('Sales Reply AI'),
       syncFullHistory: false,
       markOnlineOnConnect: true,
       connectTimeoutMs: 60000,
