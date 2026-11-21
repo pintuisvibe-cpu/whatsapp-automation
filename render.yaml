@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: insaf-ai-whatsapp-automation
+    name: sales-reply-ai-full-system
     runtime: node
     plan: free
     region: singapore
@@ -18,9 +18,17 @@ services:
         sync: false
       - key: SUPABASE_SERVICE_ROLE_KEY
         sync: false
+      - key: APP_URL
+        value: https://salesreplyai.codexanta.bond
       - key: DEFAULT_AI_PROVIDER
         value: gemini
       - key: DEFAULT_AI_MODEL
         value: gemini-2.5-flash
       - key: DEFAULT_AI_API_KEY
+        sync: false
+      - key: FACEBOOK_VERIFY_TOKEN
+        sync: false
+      - key: FACEBOOK_APP_SECRET
+        sync: false
+      - key: FACEBOOK_PAGE_ACCESS_TOKEN
         sync: false

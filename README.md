@@ -1,57 +1,94 @@
-# Insaf AI — Full-Stack WhatsApp QR & Multi-Provider AI Auto-Reply System
+# Sales Reply AI — Full System v2
 
-A complete Node.js + Express + Baileys + Supabase full-stack SaaS combining the **Insaf AI (`ai.insafboost.com`)** frontend website with real **Supabase Authentication**, **WhatsApp Web QR-code connection**, **multi-provider AI auto-replies**, **product catalog knowledge injection**, and **Render Free Plan persistence**.
+**Sales Reply AI** is a Bangla-first AI chatbot SaaS for Facebook Messenger, WhatsApp and website live chat. It answers customer questions, quotes products from your catalog, takes orders and hands conversations to a human when needed.
 
----
-
-## Key Features
-
-- **Full Website + Auth:** All 12 Insaf AI pages (`index.html`, `pricing.html`, `blog.html`, `documentation.html`, `login.html`, `register.html`, `forgot-password.html`, legal pages) wired to live **Supabase Auth**.
-- **WhatsApp QR Connect (`@whiskeysockets/baileys`):** Multi-user WhatsApp session manager generating crisp PNG QR codes in the browser — no Meta Cloud API business verification required.
-- **Render Free Plan Persistent Sessions:** Custom `useSupabaseAuthState` stores Baileys `creds` and Signal `keys` inside Supabase Postgres (`public.whatsapp_auth_keys`) instead of ephemeral disk, automatically restoring active WhatsApp connections on server boot.
-- **Multi-Provider AI Engine:** Switch anytime in the Dashboard UI between:
-  - **Google Gemini** (`gemini-2.5-flash`, `gemini-2.5-pro`)
-  - **OpenAI** (`gpt-4o-mini`, `gpt-4o`)
-  - **Groq** (`llama-3.3-70b-versatile`)
-  - **OpenRouter** (any model)
-  - **Anthropic Claude** (`claude-3-5-haiku-latest`, `claude-sonnet-4-20250514`)
-- **Product Catalog & Business Knowledge:** Per-user product database (`ai_products`) and delivery/policy notes automatically injected into AI prompts, plus per-customer conversation history (`whatsapp_messages`).
-- **Keep-Alive Ready:** Lightweight `/health` endpoint returning session counts and uptime for UptimeRobot / Cron-Job pings.
+- **Live site:** https://salesreplyai.codexanta.bond
+- **Stack:** Node.js + Express + Baileys + Supabase (Postgres/Auth)
+- **Developed by:** Codexanta
 
 ---
 
-## Project Structure
+## What's included
 
-```text
-ai.insafboost.com full-system/
-├── package.json
-├── render.yaml                   # Render Free Plan blueprint
-├── RENDER_ENV_VARS.txt           # Ready-to-paste Render environment variables
-├── HOSTING_GUIDE_RENDER.md       # Step-by-step Render free hosting guide
-├── USAGE_GUIDE.md                # Step-by-step WhatsApp QR & AI usage guide
-├── .env.example
-├── src/
-│   ├── server.js                 # Express API + static frontend + boot session restore
-│   ├── supabase.js               # Supabase admin client & JWT auth middleware
-│   ├── supabaseAuthState.js      # Baileys Postgres auth-state adapter
-│   ├── whatsappManager.js        # Baileys QR, auto-reconnect, incoming AI reply handler
-│   └── aiService.js              # Gemini / OpenAI / Groq / OpenRouter / Claude client
-└── public/
-    ├── index.html, login.html, register.html, dashboard.html, ...
-    ├── blog/
-    └── assets/
-        ├── css/, fonts/, images/
-        └── js/ (supabase.min.js, auth-app.js, dashboard.js, light.js, widget.js)
-```
+| Area | Implementation |
+|---|---|
+| **Frontend (13 pages)** | Landing, Pricing, Blog (+2 posts), Documentation, Login, Register, Forgot Password, Privacy, Terms, Data Deletion, Dashboard — responsive pages with clean URLs (`/pricing`, `/blog`, …) |
+| **Theme engine** | Dark + light mode (`sra-theme` localStorage key, `light.js` / `light.css`) |
+| **Auth** | Supabase Auth (email/password + Google OAuth), JWT-verified API (`requireAuth`) |
+| **WhatsApp** | Baileys QR connect, auto-reconnect, Postgres-persisted session creds (survives Render free-plan restarts) |
+| **Website Widget** | Full backend for `widget.js` v2.2: `/api/widget/init`, `/history`, `/send` (text + image + voice, pre-chat, reply delay) |
+| **Facebook Messenger** | `/webhook/facebook` (verify + signature check) + Graph API auto-replies |
+| **AI Engine** | Gemini / OpenAI / Groq / OpenRouter / Claude — product catalog + business knowledge injected into prompts |
+| **Orders** | CRUD + status pipeline (pending → delivered) + courier tracking ID |
+| **Plans & Quotas** | 6 plans (Free Trial → Enterprise) with per-period message limits |
+| **Analytics** | `/api/dashboard/stats` (30-day volume, orders, quota remaining) |
+| **Database** | `supabase/schema.sql` — 11 tables + RLS + auto free-trial on signup |
 
----
-
-## Quick Local Run
+## Quick start
 
 ```bash
 npm install
+cp .env.example .env   # fill in Supabase keys
+# The connected insaf-ai-whatsapp Supabase project is already active and its required tables/migrations are present.
+# For a different, brand-new Supabase project only: run supabase/schema.sql once.
+# Enable the Auth providers you intend to use in Supabase Dashboard.
 npm start
 # Open http://localhost:3000
 ```
 
-See **`HOSTING_GUIDE_RENDER.md`** for Render deployment and **`USAGE_GUIDE.md`** for connecting WhatsApp & AI.
+## Deploy (Render free plan)
+
+1. Push this folder to GitHub.
+2. Render → New Web Service → connect repo (uses `render.yaml`).
+3. Add the real Supabase values from your local `RENDER_ENV_VARS.txt` to Render's Environment page. That file is intentionally ignored by Git because it contains the service-role secret; never upload or commit it. Facebook app/page credentials must come from Meta and are not included.
+4. Keep-alive: point UptimeRobot/cron-job.org at `/health` every 5 min.
+5. Point the `salesreplyai.codexanta.bond` DNS at the Render service and add it as a custom domain.
+
+Detailed steps: [HOSTING_GUIDE_RENDER.md](./HOSTING_GUIDE_RENDER.md)
+
+## Dashboard guide
+
+1. **Register** → log in → Dashboard.
+2. **WhatsApp card** → Connect / Generate QR → scan with WhatsApp.
+3. **AI Settings** → pick provider + model, paste API key, write system prompt (Bangla tone, delivery charges, hotline…), Save.
+4. **Product Catalog** → add products with price/stock — the AI quotes them automatically.
+5. **Test AI Reply** → preview answers before going live.
+6. **Website Widget** → Create token → copy embed snippet onto your site:
+   ```html
+   <script src="https://salesreplyai.codexanta.bond/js/widget.js" data-token="wgt_..."></script>
+   ```
+7. **Facebook** → follow the Documentation page to create a Meta App, set the webhook URL to `https://salesreplyai.codexanta.bond/webhook/facebook` with verify token `FACEBOOK_VERIFY_TOKEN`, subscribe to `messages`, then connect your Page ID in the dashboard.
+8. **Orders** → AI-created orders appear here; update status as you ship.
+
+More detail: [USAGE_GUIDE.md](./USAGE_GUIDE.md)
+
+## Project structure
+
+```text
+sales-reply-ai/
+├── package.json / render.yaml / .env.example
+├── REA_ANALYSIS.md            # system analysis & feature map
+├── supabase/schema.sql        # complete database schema
+├── scripts/clone-agent.sh     # reproducible site crawl
+├── src/
+│   ├── server.js              # Express API + clean-URL pages + static
+│   ├── supabase.js            # admin client + JWT middleware
+│   ├── supabaseAuthState.js   # Baileys creds in Postgres
+│   ├── whatsappManager.js     # WhatsApp QR + auto-reply
+│   ├── aiService.js           # multi-provider AI engine
+│   ├── widgetService.js       # website widget backend (init/history/send)
+│   ├── facebookManager.js     # Messenger webhook + Graph API
+│   └── plans.js               # 6 plans + quota checks
+└── public/                    # 13-page frontend + assets
+```
+
+## Notes
+
+- Media uploads in the widget are stored as data-URLs for simplicity; swap in Supabase Storage URLs for production (see `widgetService.js`).
+- The `channel` column on `whatsapp_messages` distinguishes WhatsApp vs Facebook logs in one table.
+- Never commit a real `.env` — only `.env.example` is included.
+- The footer credit on every page reads: `© 2026 Sales Reply AI — Developed by Codexanta. All rights reserved.`
+
+---
+
+Developed by **Codexanta** · https://salesreplyai.codexanta.bond

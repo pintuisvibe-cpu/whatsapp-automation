@@ -1,95 +1,103 @@
-# Complete Guide: Hosting Insaf AI WhatsApp System on Render (Free Plan)
+# Complete Guide: Hosting Sales Reply AI on Render (Free Plan)
 
-Everything in your Supabase project (`insaf-ai-whatsapp`, region **Singapore / `ap-southeast-1`**) is **already created, migrated, and configured** — you do **not** need to run any SQL scripts or create database tables.
+**Sales Reply AI** — https://salesreplyai.codexanta.bond
+Developed by **Codexanta**.
+
+The connected `insaf-ai-whatsapp` Supabase project (Singapore / `ap-southeast-1`) is active. Its required tables are already present and its migrations are applied, so do **not** rerun SQL against that project. `supabase/schema.sql` is included for a separate, brand-new Supabase project only.
 
 ---
 
-## Step 1: Upload the Project to GitHub
+## Step 1: Upload the project to GitHub
 
 Render deploys Node.js apps directly from GitHub (free).
 
-1. Create a **new Private repository** on GitHub (e.g., `insaf-ai-whatsapp-system`).
-   > **Important:** Keep the repo **Private** if you ever push keys, and note that `.gitignore` already excludes `.env` and `node_modules/` so secrets are never accidentally committed.
-2. Download the project folder `ai.insafboost.com full-system` from Google Drive (or extract the zip).
-3. Inside that folder, push the code to GitHub:
+1. Create a **new Private repository** on GitHub (e.g., `sales-reply-ai-whatsapp-system`).
+   > Keep the repo **Private** if you ever push keys. `.gitignore` already excludes `.env` and `node_modules/`.
+2. Extract the `sales-reply-ai.zip` package into a folder named `sales-reply-ai`.
+3. Push the code:
+
    ```bash
+   cd sales-reply-ai
    git init
    git add .
-   git commit -m "Initial Insaf AI WhatsApp Automation system"
+   git commit -m "Initial Sales Reply AI system"
    git branch -M main
-   git remote add origin https://github.com/YOUR_USERNAME/insaf-ai-whatsapp-system.git
+   git remote add origin https://github.com/YOUR_USERNAME/sales-reply-ai-whatsapp-system.git
    git push -u origin main
    ```
 
 ---
 
-## Step 2: Create the Free Web Service on Render
+## Step 2: Create the free Web Service on Render
 
-1. Go to [https://dashboard.render.com](https://dashboard.render.com) and sign in with GitHub.
+1. Go to https://dashboard.render.com and sign in with GitHub.
 2. Click **New +** → **Web Service**.
-3. Select your GitHub repository (`insaf-ai-whatsapp-system`).
-4. Configure the Web Service settings:
-   - **Name:** `insaf-ai-whatsapp`
-   - **Region:** `Singapore` (matches your Supabase database in `ap-southeast-1` for lowest latency!)
+3. Select your repository (`sales-reply-ai-whatsapp-system`).
+4. Configure:
+
+   - **Name:** `sales-reply-ai-full-system`
+   - **Region:** `Singapore`
    - **Branch:** `main`
    - **Runtime:** `Node`
    - **Build Command:** `npm install`
    - **Start Command:** `npm start`
-   - **Instance Type:** **Free** (`$0/month`)
-   - *(Optional)* Under **Advanced → Health Check Path**, set `/health`.
+   - **Instance Type:** Free ($0/month)
+   - **Health Check Path:** `/health`
 
 ---
 
-## Step 3: Add Environment Variables on Render
+## Step 3: Add environment variables
 
-Before clicking **Create Web Service** (or under **Environment** tab after creation), add these exact variables from `RENDER_ENV_VARS.txt`:
+Copy the real Supabase values from the local-only `RENDER_ENV_VARS.txt` into Render's Environment page. The file is ignored by Git because it contains the service-role secret; never upload or commit it. `render.yaml` defines the variable names but leaves sensitive values unsynced. Facebook app secret and Page access token must be obtained from Meta if you enable Messenger.
 
 | Key | Value |
 |---|---|
 | `NODE_ENV` | `production` |
-| `SUPABASE_URL` | `https://bktvrzmecvraihdejiys.supabase.co` |
-| `SUPABASE_ANON_KEY` | *(see `RENDER_ENV_VARS.txt`)* |
-| `SUPABASE_SERVICE_ROLE_KEY` | *(see `RENDER_ENV_VARS.txt`)* |
+| `APP_URL` | `https://salesreplyai.codexanta.bond` |
+| `SUPABASE_URL` | use the value in local `RENDER_ENV_VARS.txt` |
+| `SUPABASE_ANON_KEY` | use the value in local `RENDER_ENV_VARS.txt` |
+| `SUPABASE_SERVICE_ROLE_KEY` | use the value in local `RENDER_ENV_VARS.txt` — keep private |
 | `DEFAULT_AI_PROVIDER` | `gemini` |
 | `DEFAULT_AI_MODEL` | `gemini-2.5-flash` |
+| `FACEBOOK_VERIFY_TOKEN` | your chosen verify token |
 
-*(Optional)* If you also want a default fallback AI key for users who don't enter their own key in the Dashboard, add:
-- `DEFAULT_AI_API_KEY` = your Gemini / OpenAI / Groq API key.
+Optional: `DEFAULT_AI_API_KEY` (fallback AI key), `FACEBOOK_APP_SECRET`, `FACEBOOK_PAGE_ACCESS_TOKEN`.
 
-Click **Deploy Web Service** and wait ~1–2 minutes for the build to finish.
-
----
-
-## Step 4: Verify Your Live Render Deployment
-
-Once Render shows **Live** (e.g. `https://insaf-ai-whatsapp.onrender.com`):
-
-1. Open `https://YOUR-APP.onrender.com/health` in your browser.
-   - You should see:
-     ```json
-     { "ok": true, "service": "insaf-ai-whatsapp-automation", ... }
-     ```
-2. Open `https://YOUR-APP.onrender.com` — your full Insaf AI landing site loads!
-3. Click **Get Started** (`/register.html`) to create your account and open `/dashboard.html`.
+Click **Deploy Web Service** and wait ~1–2 minutes.
 
 ---
 
-## Step 5: Keep Render Free Plan Awake 24/7 (Crucial for WhatsApp!)
+## Step 4: Verify the deployment
 
-Render's **Free Plan** spins down an app after **15 minutes of no incoming HTTP traffic**. When it sleeps, the WhatsApp WebSocket disconnects until the next HTTP request wakes it up.
+Once Render shows **Live**:
 
-Our system has two built-in protections:
-1. **Persistent Postgres Session Storage:** Your WhatsApp login keys (`whatsapp_auth_keys`) live in **Supabase Postgres**, NOT Render's temporary disk. Even if Render restarts or redeploys, your server automatically runs `restoreSavedWhatsAppSessions()` on boot without needing a new QR scan!
-2. **Keep-Alive `/health` Ping:** Set up a free monitor to ping `/health` every **5–10 minutes** so Render stays awake 24/7:
-   - Go to [https://uptimerobot.com](https://uptimerobot.com) or [https://cron-job.org](https://cron-job.org) (both free).
-   - Create a new **HTTP(s) Monitor**.
-   - **URL:** `https://YOUR-APP.onrender.com/health`
-   - **Interval:** Every **5 minutes** (or **10 minutes**).
-   - Save! Your Render instance will stay online continuously and respond to WhatsApp messages instantly.
+1. Open `https://YOUR-APP.onrender.com/health` — you should see:
+   ```json
+   { "status": "ok", "service": "sales-reply-ai-full-system-v2", ... }
+   ```
+2. Open `https://YOUR-APP.onrender.com` — the Sales Reply AI landing page loads.
+3. Register at `/register` and open `/dashboard`.
 
 ---
 
-## Step 6: Optional Custom Domain & Supabase Auth Redirects
+## Step 5: Connect the domain
 
-- Your Supabase project already allows `https://*.onrender.com/**` and `http://localhost:3000/**` in Auth Redirect URLs.
-- If you connect a custom domain (e.g., `ai.yourdomain.com`) in Render **Settings → Custom Domains**, also add `https://ai.yourdomain.com/**` in **Supabase Dashboard → Authentication → URL Configuration → Redirect URLs**.
+1. In Render → **Settings → Custom Domains**, add `salesreplyai.codexanta.bond`.
+2. Point the DNS (CNAME or A record) to the Render-provided target.
+3. Add `APP_URL=https://salesreplyai.codexanta.bond` as an environment variable so widget/embed URLs and AI referers use the correct domain.
+4. In Supabase → **Authentication → URL Configuration → Redirect URLs**, add `https://salesreplyai.codexanta.bond/**` (and keep `http://localhost:3000/**` for local development).
+
+---
+
+## Step 6: Keep the Render free plan awake
+
+Render's free plan sleeps after ~15 minutes of no traffic, which disconnects the WhatsApp WebSocket.
+
+1. WhatsApp session credentials are stored in Supabase Postgres (`whatsapp_auth_keys`) — the server restores them automatically on boot; no QR rescan is needed after a restart.
+2. Set up a free monitor (UptimeRobot or cron-job.org) to ping `https://salesreplyai.codexanta.bond/health` every **5 minutes**.
+
+---
+
+## Security note
+
+The real `RENDER_ENV_VARS.txt` exists only in the local workspace and is ignored by Git. Add its values directly in the Render dashboard; **never commit or upload the service-role key**.

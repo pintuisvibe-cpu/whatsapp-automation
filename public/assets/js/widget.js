@@ -1,6 +1,6 @@
 /**
  * Website Live Chat Widget Script (Tawk.to / Crisp Style)
- * Insaf AI SaaS Engine - Version 2.2
+ * Sales Reply AI SaaS Engine - Version 2.2
  */
 (function () {
     'use strict';
@@ -13,65 +13,28 @@
 
     var widgetToken = scriptTag ? scriptTag.getAttribute('data-token') : null;
     if (!widgetToken) {
-        console.error('[Insaf AI Widget] Missing data-token attribute in script tag.');
+        console.error('[Sales Reply AI Widget] Missing data-token attribute in script tag.');
         return;
     }
 
     // Determine Base URL from script src
     var scriptSrc = scriptTag.src;
-    var baseUrl = window.location.origin;
-    if (scriptSrc) {
-        if (scriptSrc.indexOf('/assets/js/widget.js') !== -1) {
-            baseUrl = scriptSrc.substring(0, scriptSrc.indexOf('/assets/js/widget.js'));
-        } else if (scriptSrc.indexOf('/js/widget.js') !== -1) {
-            baseUrl = scriptSrc.substring(0, scriptSrc.indexOf('/js/widget.js'));
-        }
-    }
-    var STATIC_WIDGET_CONFIG = {"primaryColor": "#6171ff", "bgColor": "#0f172a", "textColor": "#ffffff", "headerBg": "#ff8b17", "headerTextColor": "#FFFFFF", "widgetTitle": "Customer Support", "agentName": "Insaf Ai", "welcomeMessage": "কোন কিছু জানার আছে? তাহলে আমাকে বলতে পারেন 😊", "botAvatar": "https://agent.insafboost.com/uploads/widget-avatars/avatar_1792245794_EppjYcRPAi.jpg", "hideBranding": true, "customBrandingText": null, "prechatMode": "disabled", "prechatAskName": true, "prechatAskPhone": true, "prechatAskEmail": false, "businessHoursEnabled": false, "offlineMessage": "Our support team is currently offline.", "aiActive": true, "replyDelayEnabled": true, "replyDelaySeconds": 5, "allowImageUpload": true, "allowVoiceRecord": true, "voiceReplyEnabled": false};
-    STATIC_WIDGET_CONFIG.botAvatar = (baseUrl && baseUrl !== 'null' ? baseUrl : '.') + '/assets/images/avatar_1792245794_EppjYcRPAi.jpg';
-    var STATIC_STORAGE_KEY = 'insaf_clone_chat_' + widgetToken;
-    function getStaticHistory() {
-        try {
-            var raw = localStorage.getItem(STATIC_STORAGE_KEY);
-            return raw ? JSON.parse(raw) : [];
-        } catch (e) { return []; }
-    }
-    function saveStaticMessage(msg) {
-        try {
-            var arr = getStaticHistory();
-            arr.push(msg);
-            if (arr.length > 50) arr = arr.slice(-50);
-            localStorage.setItem(STATIC_STORAGE_KEY, JSON.stringify(arr));
-        } catch (e) {}
-    }
-    function generateDemoReply(userText) {
-        var q = (userText || '').toLowerCase();
-        if (q.indexOf('price') !== -1 || q.indexOf('pricing') !== -1 || q.indexOf('দাম') !== -1 || q.indexOf('প্যাকেজ') !== -1 || q.indexOf('tk') !== -1 || q.indexOf('৳') !== -1) {
-            return 'আমাদের প্যাকেজগুলো শুরু হচ্ছে মাত্র Starter প্ল্যান থেকে এবং ফ্রি ট্রায়ালও রয়েছে! বিস্তারিত দেখতে Pricing পেজ ভিজিট করুন অথবা আপনার বিজনেসের ধরন বলুন 😊';
-        }
-        if (q.indexOf('facebook') !== -1 || q.indexOf('messenger') !== -1 || q.indexOf('whatsapp') !== -1 || q.indexOf('ফেসবুক') !== -1 || q.indexOf('হোয়াটসঅ্যাপ') !== -1) {
-            return 'Insaf AI দিয়ে মাত্র ৫ মিনিটে Facebook Page, Messenger, Instagram এবং WhatsApp-এ ২৪/৭ বাংলা ও ইংরেজি AI অটো-রিপ্লাই ও অর্ডার অটোমেশন সেটআপ করা যায় 🚀';
-        }
-        if (q.indexOf('trial') !== -1 || q.indexOf('free') !== -1 || q.indexOf('ফ্রি') !== -1 || q.indexOf('শুরু') !== -1) {
-            return 'Get Started / Register পেজ থেকে একদম ফ্রি ট্রায়াল অ্যাকাউন্ট খুলে এখনই টেস্ট করতে পারবেন! কোনো কার্ডের প্রয়োজন নেই।';
-        }
-        return 'ধন্যবাদ আপনার মেসেজের জন্য! এটি Insaf AI ওয়েবসাইটের একটি স্ট্যাটিক ক্লোন ডেমো চ্যাটবট। লাইভ সাপোর্টের জন্য WhatsApp (+8801969598055) অথবা support@insafboost.com এ যোগাযোগ করতে পারেন 😊';
-    }
+    var baseUrl = scriptSrc ? scriptSrc.substring(0, scriptSrc.indexOf('/js/widget.js')) : window.location.origin;
 
     // Visitor ID & Cookie Persistence (Fallback sync across localStorage & Cookies)
-    var STORAGE_KEY = 'insaf_visitor_uuid';
+    var STORAGE_KEY = 'sra_visitor_uuid';
     function getVisitorId() {
         var id = null;
         try { id = localStorage.getItem(STORAGE_KEY); } catch (e) {}
         if (!id) {
-            var match = document.cookie.match(/(?:^|; )insaf_visitor_uuid=([^;]*)/);
+            var match = document.cookie.match(/(?:^|; )sra_visitor_uuid=([^;]*)/);
             if (match) id = decodeURIComponent(match[1]);
         }
         if (!id) {
             id = 'vis_' + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
         }
         try { localStorage.setItem(STORAGE_KEY, id); } catch (e) {}
-        try { document.cookie = 'insaf_visitor_uuid=' + encodeURIComponent(id) + '; path=/; max-age=31536000; SameSite=Lax'; } catch (e) {}
+        try { document.cookie = 'sra_visitor_uuid=' + encodeURIComponent(id) + '; path=/; max-age=31536000; SameSite=Lax'; } catch (e) {}
         return id;
     }
 
@@ -104,14 +67,14 @@
     var isOpen = false;
     var pollInterval = null;
     var isPrechatSubmitted = false;
-    try { isPrechatSubmitted = localStorage.getItem('insaf_prechat_done_' + widgetToken) === 'true'; } catch(e) {}
+    try { isPrechatSubmitted = localStorage.getItem('sra_prechat_done_' + widgetToken) === 'true'; } catch(e) {}
     var visitorName = '';
     var visitorPhone = '';
     var visitorEmail = '';
     try {
-        visitorName = localStorage.getItem('insaf_vis_name') || '';
-        visitorPhone = localStorage.getItem('insaf_vis_phone') || '';
-        visitorEmail = localStorage.getItem('insaf_vis_email') || '';
+        visitorName = localStorage.getItem('sra_vis_name') || '';
+        visitorPhone = localStorage.getItem('sra_vis_phone') || '';
+        visitorEmail = localStorage.getItem('sra_vis_email') || '';
     } catch(e) {}
 
     // Media & Voice State
@@ -151,16 +114,16 @@
 
         // Inject CSS Styles
         var styleEl = document.createElement('style');
-        styleEl.id = 'insaf-widget-style';
+        styleEl.id = 'sra-widget-style';
         styleEl.innerHTML = `
         :root {
-            --insaf-primary: #8B5CF6;
-            --insaf-bg: #0F172A;
-            --insaf-text: #FFFFFF;
-            --insaf-header-bg: #8B5CF6;
-            --insaf-header-text: #FFFFFF;
+            --sra-primary: #8B5CF6;
+            --sra-bg: #0F172A;
+            --sra-text: #FFFFFF;
+            --sra-header-bg: #8B5CF6;
+            --sra-header-text: #FFFFFF;
         }
-        .insaf-widget-wrapper {
+        .sra-widget-wrapper {
             position: fixed;
             bottom: 24px;
             right: 24px;
@@ -168,15 +131,15 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             box-sizing: border-box;
         }
-        .insaf-widget-wrapper * { box-sizing: border-box; margin: 0; padding: 0; }
+        .sra-widget-wrapper * { box-sizing: border-box; margin: 0; padding: 0; }
         
         /* Floating Button */
-        .insaf-widget-btn {
+        .sra-widget-btn {
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            background: var(--insaf-header-bg, var(--insaf-primary, #8B5CF6));
-            color: var(--insaf-header-text, #ffffff);
+            background: var(--sra-header-bg, var(--sra-primary, #8B5CF6));
+            color: var(--sra-header-text, #ffffff);
             border: none;
             cursor: pointer;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28), 0 2px 6px rgba(0,0,0,0.12);
@@ -186,12 +149,12 @@
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
         }
-        .insaf-widget-btn:hover {
+        .sra-widget-btn:hover {
             transform: scale(1.08);
             box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
         }
-        .insaf-widget-btn svg { width: 26px; height: 26px; fill: currentColor; transition: transform 0.3s; }
-        .insaf-widget-badge-pulse {
+        .sra-widget-btn svg { width: 26px; height: 26px; fill: currentColor; transition: transform 0.3s; }
+        .sra-widget-badge-pulse {
             position: absolute;
             top: 2px; right: 2px;
             width: 14px; height: 14px;
@@ -201,7 +164,7 @@
         }
 
         /* Chat Window Container */
-        .insaf-chat-box {
+        .sra-chat-box {
             position: absolute;
             bottom: 76px;
             right: 0;
@@ -209,8 +172,8 @@
             max-width: calc(100vw - 32px);
             height: 560px;
             max-height: calc(100vh - 120px);
-            background: var(--insaf-bg, #0f172a);
-            color: var(--insaf-text, #f8fafc);
+            background: var(--sra-bg, #0f172a);
+            color: var(--sra-text, #f8fafc);
             border-radius: 20px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.08);
             display: flex;
@@ -221,16 +184,16 @@
             pointer-events: none;
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .insaf-chat-box.open {
+        .sra-chat-box.open {
             opacity: 1;
             transform: translateY(0) scale(1);
             pointer-events: auto;
         }
 
         /* Header */
-        .insaf-chat-header {
-            background: var(--insaf-header-bg, var(--insaf-primary, #8B5CF6));
-            color: var(--insaf-header-text, #ffffff);
+        .sra-chat-header {
+            background: var(--sra-header-bg, var(--sra-primary, #8B5CF6));
+            color: var(--sra-header-text, #ffffff);
             padding: 16px 20px;
             display: flex;
             align-items: center;
@@ -238,40 +201,40 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             flex-shrink: 0;
         }
-        .insaf-header-info { display: flex; align-items: center; gap: 12px; }
-        .insaf-header-avatar {
+        .sra-header-info { display: flex; align-items: center; gap: 12px; }
+        .sra-header-avatar {
             width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.2);
             display: flex; align-items: center; justify-content: center; font-size: 20px;
             overflow: hidden; border: 2px solid rgba(255,255,255,0.3); flex-shrink: 0;
         }
-        .insaf-header-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .insaf-header-title { font-size: 15px; font-weight: 700; color: inherit; line-height: 1.2; }
-        .insaf-header-sub { font-size: 11px; color: inherit; opacity: 0.88; display: flex; align-items: center; gap: 5px; margin-top: 2px; }
-        .insaf-dot-active { width: 6px; height: 6px; border-radius: 50%; background: #10B981; }
+        .sra-header-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .sra-header-title { font-size: 15px; font-weight: 700; color: inherit; line-height: 1.2; }
+        .sra-header-sub { font-size: 11px; color: inherit; opacity: 0.88; display: flex; align-items: center; gap: 5px; margin-top: 2px; }
+        .sra-dot-active { width: 6px; height: 6px; border-radius: 50%; background: #10B981; }
 
-        .insaf-close-btn {
+        .sra-close-btn {
             background: none; border: none; color: inherit; opacity: 0.85;
             cursor: pointer; padding: 6px; border-radius: 50%;
             transition: background 0.2s, opacity 0.2s; display: flex; align-items: center; justify-content: center;
         }
-        .insaf-close-btn:hover { background: rgba(255,255,255,0.15); opacity: 1; }
+        .sra-close-btn:hover { background: rgba(255,255,255,0.15); opacity: 1; }
 
         /* Body & Messages */
-        .insaf-chat-body {
+        .sra-chat-body {
             flex: 1;
             padding: 16px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
             gap: 12px;
-            background: var(--insaf-bg, #0f172a);
+            background: var(--sra-bg, #0f172a);
             scroll-behavior: smooth;
         }
-        .insaf-chat-body::-webkit-scrollbar { width: 5px; }
-        .insaf-chat-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
+        .sra-chat-body::-webkit-scrollbar { width: 5px; }
+        .sra-chat-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
 
         /* Pre-Chat Lead Form Modal */
-        .insaf-prechat-card {
+        .sra-prechat-card {
             background: rgba(255,255,255,0.05);
             border: 1px solid rgba(255,255,255,0.12);
             border-radius: 16px;
@@ -282,11 +245,11 @@
             margin-bottom: 12px;
             color: inherit;
         }
-        .insaf-prechat-title { font-size: 14px; font-weight: 700; color: inherit; }
-        .insaf-prechat-sub { font-size: 12px; opacity: 0.8; }
-        .insaf-field-group { display: flex; flex-direction: column; gap: 4px; }
-        .insaf-field-label { font-size: 11px; opacity: 0.85; font-weight: 600; }
-        .insaf-field-input {
+        .sra-prechat-title { font-size: 14px; font-weight: 700; color: inherit; }
+        .sra-prechat-sub { font-size: 12px; opacity: 0.8; }
+        .sra-field-group { display: flex; flex-direction: column; gap: 4px; }
+        .sra-field-label { font-size: 11px; opacity: 0.85; font-weight: 600; }
+        .sra-field-input {
             background: rgba(0, 0, 0, 0.2) !important;
             border: 1px solid rgba(255, 255, 255, 0.18) !important;
             border-radius: 10px !important;
@@ -298,17 +261,17 @@
             width: 100% !important;
             transition: all 0.2s ease !important;
         }
-        .insaf-field-input:focus {
-            border-color: var(--insaf-primary, #8B5CF6) !important;
+        .sra-field-input:focus {
+            border-color: var(--sra-primary, #8B5CF6) !important;
             box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.25) !important;
         }
-        .insaf-field-input::placeholder {
+        .sra-field-input::placeholder {
             color: inherit !important;
             opacity: 0.5 !important;
             font-size: 12.5px !important;
         }
-        .insaf-start-btn {
-            background: var(--insaf-primary, #8B5CF6);
+        .sra-start-btn {
+            background: var(--sra-primary, #8B5CF6);
             color: #ffffff;
             border: none;
             border-radius: 10px;
@@ -319,22 +282,22 @@
             margin-top: 6px;
             transition: opacity 0.2s, transform 0.1s;
         }
-        .insaf-start-btn:hover { opacity: 0.92; transform: translateY(-1px); }
-        .insaf-skip-link {
+        .sra-start-btn:hover { opacity: 0.92; transform: translateY(-1px); }
+        .sra-skip-link {
             text-align: center;
             font-size: 11px;
             opacity: 0.65;
             cursor: pointer;
             text-decoration: underline;
         }
-        .insaf-skip-link:hover { opacity: 0.95; }
+        .sra-skip-link:hover { opacity: 0.95; }
 
         /* Bubbles */
-        .insaf-msg-group { display: flex; flex-direction: column; max-width: 84%; }
-        .insaf-msg-group.incoming { align-self: flex-start; }
-        .insaf-msg-group.outgoing { align-self: flex-end; }
+        .sra-msg-group { display: flex; flex-direction: column; max-width: 84%; }
+        .sra-msg-group.incoming { align-self: flex-start; }
+        .sra-msg-group.outgoing { align-self: flex-end; }
 
-        .insaf-msg-bubble {
+        .sra-msg-bubble {
             padding: 12px 15px;
             border-radius: 16px;
             font-size: 13.5px;
@@ -344,27 +307,27 @@
             white-space: pre-wrap;
             position: relative;
         }
-        .insaf-msg-group.incoming .insaf-msg-bubble {
+        .sra-msg-group.incoming .sra-msg-bubble {
             background: rgba(255,255,255,0.08);
             color: inherit;
             border-bottom-left-radius: 4px;
             border: 1px solid rgba(255,255,255,0.08);
         }
-        .insaf-msg-group.outgoing .insaf-msg-bubble {
-            background: var(--insaf-primary, #8B5CF6);
+        .sra-msg-group.outgoing .sra-msg-bubble {
+            background: var(--sra-primary, #8B5CF6);
             color: #ffffff;
             border-bottom-right-radius: 4px;
         }
-        .insaf-msg-time {
+        .sra-msg-time {
             font-size: 10px;
             opacity: 0.6;
             margin-top: 4px;
             padding: 0 4px;
         }
-        .insaf-msg-group.outgoing .insaf-msg-time { text-align: right; }
+        .sra-msg-group.outgoing .sra-msg-time { text-align: right; }
 
         /* Image Message Card */
-        .insaf-msg-image-card {
+        .sra-msg-image-card {
             border-radius: 14px;
             overflow: hidden;
             background: rgba(255, 255, 255, 0.05);
@@ -377,17 +340,17 @@
             display: flex;
             flex-direction: column;
         }
-        .insaf-msg-group.incoming .insaf-msg-image-card {
+        .sra-msg-group.incoming .sra-msg-image-card {
             border-bottom-left-radius: 4px;
         }
-        .insaf-msg-group.outgoing .insaf-msg-image-card {
+        .sra-msg-group.outgoing .sra-msg-image-card {
             border-bottom-right-radius: 4px;
         }
-        .insaf-msg-image-card:hover {
+        .sra-msg-image-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 22px rgba(0, 0, 0, 0.4);
         }
-        .insaf-msg-img-wrap {
+        .sra-msg-img-wrap {
             position: relative;
             width: 100%;
             background: rgba(0, 0, 0, 0.25);
@@ -398,14 +361,14 @@
             max-height: 220px;
             overflow: hidden;
         }
-        .insaf-msg-img-wrap img {
+        .sra-msg-img-wrap img {
             width: 100%;
             height: 100%;
             max-height: 220px;
             object-fit: cover;
             display: block;
         }
-        .insaf-msg-image-caption {
+        .sra-msg-image-caption {
             padding: 8px 12px;
             font-size: 12px;
             font-weight: 500;
@@ -418,7 +381,7 @@
             gap: 6px;
             word-break: break-word;
         }
-        .insaf-msg-image-caption svg {
+        .sra-msg-image-caption svg {
             width: 14px;
             height: 14px;
             flex-shrink: 0;
@@ -427,7 +390,7 @@
         }
 
         /* Typing Indicator */
-        .insaf-typing-row {
+        .sra-typing-row {
             align-self: flex-start;
             background: rgba(255,255,255,0.08);
             padding: 10px 14px;
@@ -438,19 +401,19 @@
             gap: 4px;
             border: 1px solid rgba(255,255,255,0.08);
         }
-        .insaf-typing-row.show { display: flex; }
-        .insaf-typing-dot {
+        .sra-typing-row.show { display: flex; }
+        .sra-typing-dot {
             width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.7;
-            animation: insafBounce 1.2s infinite ease-in-out;
+            animation: sraBounce 1.2s infinite ease-in-out;
         }
-        .insaf-typing-dot:nth-child(2) { animation-delay: 0.2s; }
-        .insaf-typing-dot:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes insafBounce { 0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; } 40% { transform: scale(1); opacity: 1; } }
+        .sra-typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .sra-typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes sraBounce { 0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; } 40% { transform: scale(1); opacity: 1; } }
 
         /* Footer / Input Bar */
-        .insaf-chat-footer {
+        .sra-chat-footer {
             padding: 10px 12px;
-            background: var(--insaf-bg, #0f172a);
+            background: var(--sra-bg, #0f172a);
             border-top: 1px solid rgba(255,255,255,0.08);
             display: flex;
             align-items: center;
@@ -458,13 +421,13 @@
             flex-shrink: 0;
             position: relative;
         }
-        .insaf-footer-actions {
+        .sra-footer-actions {
             display: flex;
             align-items: center;
             gap: 6px;
             flex-shrink: 0;
         }
-        .insaf-action-btn {
+        .sra-action-btn {
             width: 36px; height: 36px;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.08);
@@ -477,29 +440,29 @@
             flex-shrink: 0;
             padding: 0;
         }
-        .insaf-action-btn:hover {
+        .sra-action-btn:hover {
             opacity: 1;
             background: rgba(255, 255, 255, 0.16);
             transform: scale(1.05);
         }
-        .insaf-action-btn svg { width: 17px; height: 17px; fill: currentColor; }
-        .insaf-action-btn.active-rec {
+        .sra-action-btn svg { width: 17px; height: 17px; fill: currentColor; }
+        .sra-action-btn.active-rec {
             background: #ef4444 !important;
             color: #ffffff !important;
-            animation: insafRecPulse 1.2s infinite ease-in-out;
+            animation: sraRecPulse 1.2s infinite ease-in-out;
         }
-        @keyframes insafRecPulse {
+        @keyframes sraRecPulse {
             0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); }
             50% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
         }
-        .insaf-input-wrap {
+        .sra-input-wrap {
             flex: 1;
             position: relative;
             display: flex;
             align-items: center;
             min-width: 0;
         }
-        .insaf-attached-preview {
+        .sra-attached-preview {
             position: absolute;
             bottom: calc(100% + 8px);
             left: 0;
@@ -513,16 +476,16 @@
             box-shadow: 0 6px 16px rgba(0,0,0,0.4);
             z-index: 20;
         }
-        .insaf-attached-preview img {
+        .sra-attached-preview img {
             width: 36px; height: 36px; object-fit: cover; border-radius: 6px; display: block;
         }
-        .insaf-attached-remove {
+        .sra-attached-remove {
             background: #ef4444; color: #fff; border: none; border-radius: 50%;
             width: 18px; height: 18px; font-size: 11px; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
             line-height: 1;
         }
-        .insaf-voice-recording-bar {
+        .sra-voice-recording-bar {
             position: absolute;
             inset: 0;
             z-index: 5;
@@ -538,56 +501,56 @@
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             box-sizing: border-box;
-            animation: insafRecFadeIn 0.2s ease-out;
+            animation: sraRecFadeIn 0.2s ease-out;
         }
-        @keyframes insafRecFadeIn {
+        @keyframes sraRecFadeIn {
             from { opacity: 0; transform: scale(0.97); }
             to { opacity: 1; transform: scale(1); }
         }
-        .insaf-rec-indicator {
+        .sra-rec-indicator {
             display: flex;
             align-items: center;
             gap: 8px;
             min-width: 0;
         }
-        .insaf-rec-pulse {
+        .sra-rec-pulse {
             width: 10px;
             height: 10px;
             border-radius: 50%;
             background: #ef4444;
             box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
-            animation: insafDotRipple 1.4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+            animation: sraDotRipple 1.4s infinite cubic-bezier(0.4, 0, 0.2, 1);
             flex-shrink: 0;
         }
-        @keyframes insafDotRipple {
+        @keyframes sraDotRipple {
             0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
             70% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
             100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
-        .insaf-rec-waves {
+        .sra-rec-waves {
             display: flex;
             align-items: center;
             gap: 2.5px;
             height: 18px;
         }
-        .insaf-wave-bar {
+        .sra-wave-bar {
             width: 2.5px;
             height: 5px;
             background: #ef4444;
             border-radius: 2px;
-            animation: insafWaveMotion 1.1s ease-in-out infinite;
+            animation: sraWaveMotion 1.1s ease-in-out infinite;
         }
-        .insaf-wave-bar:nth-child(1) { animation-delay: 0.0s; height: 6px; }
-        .insaf-wave-bar:nth-child(2) { animation-delay: 0.2s; height: 12px; }
-        .insaf-wave-bar:nth-child(3) { animation-delay: 0.4s; height: 16px; }
-        .insaf-wave-bar:nth-child(4) { animation-delay: 0.15s; height: 10px; }
-        .insaf-wave-bar:nth-child(5) { animation-delay: 0.35s; height: 7px; }
+        .sra-wave-bar:nth-child(1) { animation-delay: 0.0s; height: 6px; }
+        .sra-wave-bar:nth-child(2) { animation-delay: 0.2s; height: 12px; }
+        .sra-wave-bar:nth-child(3) { animation-delay: 0.4s; height: 16px; }
+        .sra-wave-bar:nth-child(4) { animation-delay: 0.15s; height: 10px; }
+        .sra-wave-bar:nth-child(5) { animation-delay: 0.35s; height: 7px; }
 
-        @keyframes insafWaveMotion {
+        @keyframes sraWaveMotion {
             0%, 100% { transform: scaleY(0.35); opacity: 0.55; }
             50% { transform: scaleY(1.3); opacity: 1; }
         }
-        .insaf-rec-time {
+        .sra-rec-time {
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
             font-size: 13.5px;
             font-weight: 700;
@@ -595,7 +558,7 @@
             letter-spacing: 0.5px;
             user-select: none;
         }
-        .insaf-rec-cancel {
+        .sra-rec-cancel {
             display: inline-flex;
             align-items: center;
             gap: 4px;
@@ -612,20 +575,20 @@
             flex-shrink: 0;
             line-height: 1;
         }
-        .insaf-rec-cancel svg {
+        .sra-rec-cancel svg {
             width: 12px;
             height: 12px;
             fill: currentColor;
         }
-        .insaf-rec-cancel:hover {
+        .sra-rec-cancel:hover {
             background: rgba(239, 68, 68, 0.22);
             border-color: rgba(239, 68, 68, 0.5);
             transform: scale(1.03);
         }
-        .insaf-rec-cancel:active {
+        .sra-rec-cancel:active {
             transform: scale(0.97);
         }
-        .insaf-chat-input {
+        .sra-chat-input {
             width: 100%;
             background: rgba(255,255,255,0.07);
             border: 1px solid rgba(255,255,255,0.12);
@@ -636,16 +599,16 @@
             outline: none;
             transition: border-color 0.2s, box-shadow 0.2s;
         }
-        .insaf-chat-input:focus {
-            border-color: var(--insaf-primary, #8B5CF6);
+        .sra-chat-input:focus {
+            border-color: var(--sra-primary, #8B5CF6);
             box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
         }
-        .insaf-chat-input::placeholder { color: inherit; opacity: 0.5; }
+        .sra-chat-input::placeholder { color: inherit; opacity: 0.5; }
 
-        .insaf-send-btn {
+        .sra-send-btn {
             width: 38px; height: 38px;
             border-radius: 50%;
-            background: var(--insaf-primary, #8B5CF6);
+            background: var(--sra-primary, #8B5CF6);
             color: #ffffff;
             border: none;
             cursor: pointer;
@@ -654,11 +617,11 @@
             flex-shrink: 0;
             padding: 0;
         }
-        .insaf-send-btn:hover { opacity: 0.9; transform: scale(1.05); }
-        .insaf-send-btn svg { width: 17px; height: 17px; fill: currentColor; }
+        .sra-send-btn:hover { opacity: 0.9; transform: scale(1.05); }
+        .sra-send-btn svg { width: 17px; height: 17px; fill: currentColor; }
 
         /* Audio Message Card */
-        .insaf-audio-card {
+        .sra-audio-card {
             display: flex;
             align-items: center;
             gap: 10px;
@@ -669,15 +632,15 @@
             min-width: 200px;
             max-width: 280px;
         }
-        .insaf-msg-group.outgoing .insaf-audio-card {
-            background: var(--insaf-primary, #8B5CF6);
+        .sra-msg-group.outgoing .sra-audio-card {
+            background: var(--sra-primary, #8B5CF6);
             color: #ffffff;
             border-bottom-right-radius: 4px;
         }
-        .insaf-msg-group.incoming .insaf-audio-card {
+        .sra-msg-group.incoming .sra-audio-card {
             border-bottom-left-radius: 4px;
         }
-        .insaf-audio-play-btn {
+        .sra-audio-play-btn {
             width: 34px; height: 34px; border-radius: 50%;
             background: rgba(255,255,255,0.22); border: none;
             color: inherit; cursor: pointer;
@@ -685,53 +648,53 @@
             flex-shrink: 0;
             transition: transform 0.15s ease, background 0.15s ease;
         }
-        .insaf-audio-play-btn:hover {
+        .sra-audio-play-btn:hover {
             transform: scale(1.08);
             background: rgba(255,255,255,0.32);
         }
-        .insaf-audio-play-btn svg { width: 14px; height: 14px; fill: currentColor; }
-        .insaf-audio-info { flex: 1; display: flex; flex-direction: column; gap: 4px; }
-        .insaf-audio-progress-bar {
+        .sra-audio-play-btn svg { width: 14px; height: 14px; fill: currentColor; }
+        .sra-audio-info { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+        .sra-audio-progress-bar {
             width: 100%; height: 5px; background: rgba(255,255,255,0.2);
             border-radius: 3px; overflow: hidden; cursor: pointer;
         }
-        .insaf-audio-progress-fill {
+        .sra-audio-progress-fill {
             width: 0%; height: 100%; background: currentColor;
             transition: width 0.1s linear;
         }
-        .insaf-audio-time { font-size: 10.5px; opacity: 0.8; font-variant-numeric: tabular-nums; }
+        .sra-audio-time { font-size: 10.5px; opacity: 0.8; font-variant-numeric: tabular-nums; }
 
         /* Footer Branding */
-        .insaf-branding {
+        .sra-branding {
             text-align: center;
             padding: 6px 10px;
-            background: var(--insaf-bg, #0f172a);
+            background: var(--sra-bg, #0f172a);
             font-size: 10px;
             opacity: 0.65;
             border-top: 1px solid rgba(255,255,255,0.04);
             flex-shrink: 0;
         }
-        .insaf-branding a { color: inherit; text-decoration: none; font-weight: 700; opacity: 0.9; }
-        .insaf-branding a:hover { text-decoration: underline; }
+        .sra-branding a { color: inherit; text-decoration: none; font-weight: 700; opacity: 0.9; }
+        .sra-branding a:hover { text-decoration: underline; }
 
         @media (max-width: 480px) {
-            .insaf-widget-wrapper { bottom: 16px; right: 16px; }
-            .insaf-widget-wrapper.insaf-mobile-open {
+            .sra-widget-wrapper { bottom: 16px; right: 16px; }
+            .sra-widget-wrapper.sra-mobile-open {
                 position: fixed !important;
                 top: 0 !important;
                 left: 0 !important;
                 right: 0 !important;
                 bottom: 0 !important;
                 width: 100% !important;
-                height: var(--insaf-vvh, 100%) !important;
+                height: var(--sra-vvh, 100%) !important;
                 z-index: 9999999 !important;
                 overflow: hidden !important;
                 pointer-events: none;
             }
-            .insaf-widget-wrapper.insaf-mobile-open .insaf-widget-btn {
+            .sra-widget-wrapper.sra-mobile-open .sra-widget-btn {
                 display: none !important;
             }
-            .insaf-chat-box {
+            .sra-chat-box {
                 position: fixed !important;
                 top: 0 !important;
                 left: 0 !important;
@@ -739,10 +702,10 @@
                 bottom: auto !important;
                 width: 100% !important;
                 height: 100% !important;
-                height: var(--insaf-vvh, 100%) !important;
+                height: var(--sra-vvh, 100%) !important;
                 max-width: 100% !important;
                 max-height: 100% !important;
-                max-height: var(--insaf-vvh, 100%) !important;
+                max-height: var(--sra-vvh, 100%) !important;
                 border-radius: 0 !important;
                 z-index: 9999999 !important;
                 transform: none !important;
@@ -751,17 +714,17 @@
                 flex-direction: column !important;
                 transition: opacity 0.2s ease;
             }
-            .insaf-chat-box:not(.open) {
+            .sra-chat-box:not(.open) {
                 display: none !important;
                 opacity: 0 !important;
                 pointer-events: none !important;
             }
-            .insaf-chat-box.open {
+            .sra-chat-box.open {
                 display: flex !important;
                 opacity: 1 !important;
                 pointer-events: auto !important;
             }
-            .insaf-chat-header {
+            .sra-chat-header {
                 position: sticky !important;
                 top: 0 !important;
                 left: 0 !important;
@@ -770,31 +733,31 @@
                 flex-shrink: 0 !important;
                 padding-top: max(14px, env(safe-area-inset-top, 14px)) !important;
             }
-            .insaf-chat-body {
+            .sra-chat-body {
                 flex: 1 1 auto !important;
                 min-height: 0 !important;
                 overflow-y: auto !important;
                 -webkit-overflow-scrolling: touch !important;
                 overscroll-behavior: contain !important;
             }
-            .insaf-chat-footer {
+            .sra-chat-footer {
                 flex-shrink: 0 !important;
                 padding-bottom: max(12px, env(safe-area-inset-bottom, 12px)) !important;
             }
-            .insaf-branding {
+            .sra-branding {
                 flex-shrink: 0 !important;
             }
-            .insaf-chat-input,
-            .insaf-field-input {
+            .sra-chat-input,
+            .sra-field-input {
                 font-size: 16px !important; /* Prevents auto-zoom in iOS Safari */
             }
-            .insaf-voice-recording-bar {
+            .sra-voice-recording-bar {
                 padding: 0 8px !important;
             }
-            .insaf-rec-time {
+            .sra-rec-time {
                 font-size: 12px !important;
             }
-            .insaf-rec-cancel {
+            .sra-rec-cancel {
                 padding: 3px 8px !important;
                 font-size: 11px !important;
             }
@@ -804,106 +767,106 @@
 
         // Build DOM Elements with Clean SVG Icons
         container = document.createElement('div');
-        container.className = 'insaf-widget-wrapper';
+        container.className = 'sra-widget-wrapper';
         container.innerHTML = `
-            <button class="insaf-widget-btn" id="insafWidgetToggle" aria-label="Open Chat">
-                <span class="insaf-widget-badge-pulse"></span>
-                <svg id="insafIconOpen" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg>
-                <svg id="insafIconClose" viewBox="0 0 24 24" style="display:none;"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            <button class="sra-widget-btn" id="sraWidgetToggle" aria-label="Open Chat">
+                <span class="sra-widget-badge-pulse"></span>
+                <svg id="sraIconOpen" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg>
+                <svg id="sraIconClose" viewBox="0 0 24 24" style="display:none;"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
             </button>
 
-            <div class="insaf-chat-box" id="insafChatBox">
-                <div class="insaf-chat-header">
-                    <div class="insaf-header-info">
-                        <div class="insaf-header-avatar" id="insafHeaderAvatar">
+            <div class="sra-chat-box" id="sraChatBox">
+                <div class="sra-chat-header">
+                    <div class="sra-header-info">
+                        <div class="sra-header-avatar" id="sraHeaderAvatar">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg>
                         </div>
                         <div>
-                            <div class="insaf-header-title" id="insafHeaderTitle">Customer Support</div>
-                            <div class="insaf-header-sub" id="insafHeaderSub"><span class="insaf-dot-active"></span> Online · AI Powered</div>
+                            <div class="sra-header-title" id="sraHeaderTitle">Customer Support</div>
+                            <div class="sra-header-sub" id="sraHeaderSub"><span class="sra-dot-active"></span> Online · AI Powered</div>
                         </div>
                     </div>
-                    <button class="insaf-close-btn" id="insafCloseBtn" aria-label="Close Chat">
+                    <button class="sra-close-btn" id="sraCloseBtn" aria-label="Close Chat">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
                     </button>
                 </div>
 
-                <div class="insaf-chat-body" id="insafChatBody">
-                    <div class="insaf-typing-row" id="insafTypingRow">
-                        <span class="insaf-typing-dot"></span>
-                        <span class="insaf-typing-dot"></span>
-                        <span class="insaf-typing-dot"></span>
+                <div class="sra-chat-body" id="sraChatBody">
+                    <div class="sra-typing-row" id="sraTypingRow">
+                        <span class="sra-typing-dot"></span>
+                        <span class="sra-typing-dot"></span>
+                        <span class="sra-typing-dot"></span>
                     </div>
                 </div>
 
-                <div class="insaf-chat-footer">
-                    <div class="insaf-footer-actions">
-                        <button class="insaf-action-btn" id="insafAttachBtn" type="button" aria-label="Send Image" title="Send Image">
+                <div class="sra-chat-footer">
+                    <div class="sra-footer-actions">
+                        <button class="sra-action-btn" id="sraAttachBtn" type="button" aria-label="Send Image" title="Send Image">
                             <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
                         </button>
-                        <input type="file" id="insafFileInput" accept="image/*" style="display:none;">
+                        <input type="file" id="sraFileInput" accept="image/*" style="display:none;">
 
-                        <button class="insaf-action-btn" id="insafMicBtn" type="button" aria-label="Record Voice" title="Record Voice">
+                        <button class="sra-action-btn" id="sraMicBtn" type="button" aria-label="Record Voice" title="Record Voice">
                             <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
                         </button>
                     </div>
 
-                    <div class="insaf-input-wrap">
-                        <div class="insaf-attached-preview" id="insafAttachedPreview" style="display:none;">
-                            <img id="insafAttachedThumb" src="" alt="attachment">
-                            <button type="button" class="insaf-attached-remove" id="insafAttachedRemove" title="Remove">&times;</button>
+                    <div class="sra-input-wrap">
+                        <div class="sra-attached-preview" id="sraAttachedPreview" style="display:none;">
+                            <img id="sraAttachedThumb" src="" alt="attachment">
+                            <button type="button" class="sra-attached-remove" id="sraAttachedRemove" title="Remove">&times;</button>
                         </div>
 
-                        <div class="insaf-voice-recording-bar" id="insafVoiceRecordingBar" style="display:none;">
-                            <div class="insaf-rec-indicator">
-                                <span class="insaf-rec-pulse"></span>
-                                <div class="insaf-rec-waves" aria-hidden="true">
-                                    <span class="insaf-wave-bar"></span>
-                                    <span class="insaf-wave-bar"></span>
-                                    <span class="insaf-wave-bar"></span>
-                                    <span class="insaf-wave-bar"></span>
-                                    <span class="insaf-wave-bar"></span>
+                        <div class="sra-voice-recording-bar" id="sraVoiceRecordingBar" style="display:none;">
+                            <div class="sra-rec-indicator">
+                                <span class="sra-rec-pulse"></span>
+                                <div class="sra-rec-waves" aria-hidden="true">
+                                    <span class="sra-wave-bar"></span>
+                                    <span class="sra-wave-bar"></span>
+                                    <span class="sra-wave-bar"></span>
+                                    <span class="sra-wave-bar"></span>
+                                    <span class="sra-wave-bar"></span>
                                 </div>
-                                <span class="insaf-rec-time" id="insafRecTime">00:00</span>
+                                <span class="sra-rec-time" id="sraRecTime">00:00</span>
                             </div>
-                            <button type="button" class="insaf-rec-cancel" id="insafRecCancel" title="Cancel Recording">
+                            <button type="button" class="sra-rec-cancel" id="sraRecCancel" title="Cancel Recording">
                                 <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
                                 <span>Cancel</span>
                             </button>
                         </div>
 
-                        <input type="text" class="insaf-chat-input" id="insafInput" placeholder="Type your message..." autocomplete="off">
+                        <input type="text" class="sra-chat-input" id="sraInput" placeholder="Type your message..." autocomplete="off">
                     </div>
 
-                    <button class="insaf-send-btn" id="insafSendBtn" aria-label="Send Message">
+                    <button class="sra-send-btn" id="sraSendBtn" aria-label="Send Message">
                         <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
                     </button>
                 </div>
-                <div class="insaf-branding" id="insafBranding">⚡ Powered by <a href="${baseUrl}" target="_blank">Insaf AI</a></div>
+                <div class="sra-branding" id="sraBranding">⚡ Powered by <a href="${baseUrl}" target="_blank">Sales Reply AI</a></div>
             </div>
         `;
         document.body.appendChild(container);
 
         // Bind DOM references
-        toggleBtn = document.getElementById('insafWidgetToggle');
-        closeBtn = document.getElementById('insafCloseBtn');
-        chatBox = document.getElementById('insafChatBox');
-        chatBody = document.getElementById('insafChatBody');
-        chatInput = document.getElementById('insafInput');
-        sendBtn = document.getElementById('insafSendBtn');
-        attachBtn = document.getElementById('insafAttachBtn');
-        fileInput = document.getElementById('insafFileInput');
-        micBtn = document.getElementById('insafMicBtn');
-        previewBox = document.getElementById('insafAttachedPreview');
-        previewThumb = document.getElementById('insafAttachedThumb');
-        removeAttachBtn = document.getElementById('insafAttachedRemove');
-        recBar = document.getElementById('insafVoiceRecordingBar');
-        recTimeEl = document.getElementById('insafRecTime');
-        recCancelBtn = document.getElementById('insafRecCancel');
-        iconOpen = document.getElementById('insafIconOpen');
-        iconClose = document.getElementById('insafIconClose');
-        typingRow = document.getElementById('insafTypingRow');
-        brandingEl = document.getElementById('insafBranding');
+        toggleBtn = document.getElementById('sraWidgetToggle');
+        closeBtn = document.getElementById('sraCloseBtn');
+        chatBox = document.getElementById('sraChatBox');
+        chatBody = document.getElementById('sraChatBody');
+        chatInput = document.getElementById('sraInput');
+        sendBtn = document.getElementById('sraSendBtn');
+        attachBtn = document.getElementById('sraAttachBtn');
+        fileInput = document.getElementById('sraFileInput');
+        micBtn = document.getElementById('sraMicBtn');
+        previewBox = document.getElementById('sraAttachedPreview');
+        previewThumb = document.getElementById('sraAttachedThumb');
+        removeAttachBtn = document.getElementById('sraAttachedRemove');
+        recBar = document.getElementById('sraVoiceRecordingBar');
+        recTimeEl = document.getElementById('sraRecTime');
+        recCancelBtn = document.getElementById('sraRecCancel');
+        iconOpen = document.getElementById('sraIconOpen');
+        iconClose = document.getElementById('sraIconClose');
+        typingRow = document.getElementById('sraTypingRow');
+        brandingEl = document.getElementById('sraBranding');
 
         // Mobile Viewport & Resizing Handlers
         ensureInteractiveWidgetMeta();
@@ -1060,7 +1023,7 @@
                 }, 1000);
             })
             .catch(function (err) {
-                console.warn('[Insaf AI Widget Mic Error]', err);
+                console.warn('[Sales Reply AI Widget Mic Error]', err);
                 alert('Microphone access was denied or is unavailable.');
             });
     }
@@ -1100,72 +1063,66 @@
 
     // 3. API Communication Logic & Initialization
     function initWidget() {
-        if (!window.INSAF_WIDGET_API_URL) {
-            config = Object.assign(config, STATIC_WIDGET_CONFIG);
-            if (document.body) {
-                mountWidget();
-            } else {
-                document.addEventListener('DOMContentLoaded', mountWidget);
-            }
-            return;
-        }
-        fetch(window.INSAF_WIDGET_API_URL + '/api/widget/init?token=' + encodeURIComponent(widgetToken))
+        fetch(baseUrl + '/api/widget/init?token=' + encodeURIComponent(widgetToken))
             .then(function (res) {
-                if (!res.ok) throw new Error('Widget token verification failed (' + res.status + ')');
+                if (!res.ok) {
+                    throw new Error('Widget token verification failed (' + res.status + ')');
+                }
                 return res.json();
             })
             .then(function (data) {
                 if (data && data.status === 'success' && data.config) {
                     config = Object.assign(config, data.config);
+                    if (document.body) {
+                        mountWidget();
+                    } else {
+                        document.addEventListener('DOMContentLoaded', mountWidget);
+                    }
                 } else {
-                    config = Object.assign(config, STATIC_WIDGET_CONFIG);
+                    console.warn('[Sales Reply AI Widget]', data ? data.message : 'Inactive or unauthorized');
                 }
-                if (document.body) mountWidget();
-                else document.addEventListener('DOMContentLoaded', mountWidget);
             })
-            .catch(function () {
-                config = Object.assign(config, STATIC_WIDGET_CONFIG);
-                if (document.body) mountWidget();
-                else document.addEventListener('DOMContentLoaded', mountWidget);
+            .catch(function (err) {
+                console.warn('[Sales Reply AI Widget]', err.message || err);
             });
     }
 
     function applyConfig() {
         if (config.primaryColor) {
-            container.style.setProperty('--insaf-primary', config.primaryColor);
+            container.style.setProperty('--sra-primary', config.primaryColor);
         }
         if (config.bgColor) {
-            container.style.setProperty('--insaf-bg', config.bgColor);
+            container.style.setProperty('--sra-bg', config.bgColor);
             chatBox.style.background = config.bgColor;
             chatBody.style.background = config.bgColor;
-            var footerEl = container.querySelector('.insaf-chat-footer');
+            var footerEl = container.querySelector('.sra-chat-footer');
             if (footerEl) footerEl.style.background = config.bgColor;
             if (brandingEl) brandingEl.style.background = config.bgColor;
         }
         if (config.headerBg) {
-            container.style.setProperty('--insaf-header-bg', config.headerBg);
-            var headerEl = container.querySelector('.insaf-chat-header');
+            container.style.setProperty('--sra-header-bg', config.headerBg);
+            var headerEl = container.querySelector('.sra-chat-header');
             if (headerEl) headerEl.style.background = config.headerBg;
         }
         if (config.textColor) {
-            container.style.setProperty('--insaf-text', config.textColor);
+            container.style.setProperty('--sra-text', config.textColor);
             chatBox.style.color = config.textColor;
         }
         if (config.headerTextColor) {
-            container.style.setProperty('--insaf-header-text', config.headerTextColor);
-            var titleEl = document.getElementById('insafHeaderTitle');
-            var subEl = document.getElementById('insafHeaderSub');
+            container.style.setProperty('--sra-header-text', config.headerTextColor);
+            var titleEl = document.getElementById('sraHeaderTitle');
+            var subEl = document.getElementById('sraHeaderSub');
             if (titleEl) titleEl.style.color = config.headerTextColor;
             if (subEl) subEl.style.color = config.headerTextColor;
         }
         if (config.widgetTitle) {
-            document.getElementById('insafHeaderTitle').innerText = config.widgetTitle;
+            document.getElementById('sraHeaderTitle').innerText = config.widgetTitle;
         }
         if (config.agentName) {
-            document.getElementById('insafHeaderSub').innerHTML = '<span class="insaf-dot-active"></span> ' + config.agentName + ' · Online';
+            document.getElementById('sraHeaderSub').innerHTML = '<span class="sra-dot-active"></span> ' + config.agentName + ' · Online';
         }
         if (config.botAvatar) {
-            document.getElementById('insafHeaderAvatar').innerHTML = '<img src="' + config.botAvatar + '" alt="Avatar">';
+            document.getElementById('sraHeaderAvatar').innerHTML = '<img src="' + config.botAvatar + '" alt="Avatar">';
         }
         if (config.hideBranding) {
             brandingEl.style.display = 'none';
@@ -1182,11 +1139,7 @@
     }
 
     function loadHistory() {
-        if (!window.INSAF_WIDGET_API_URL) {
-            renderMessages(getStaticHistory());
-            return;
-        }
-        fetch(window.INSAF_WIDGET_API_URL + '/api/widget/history?token=' + encodeURIComponent(widgetToken) + '&visitor_id=' + encodeURIComponent(visitorId))
+        fetch(baseUrl + '/api/widget/history?token=' + encodeURIComponent(widgetToken) + '&visitor_id=' + encodeURIComponent(visitorId))
             .then(function (res) { return res.json(); })
             .then(function (data) {
                 if (data.status === 'success') {
@@ -1198,9 +1151,6 @@
                     }
                     renderMessages(data.messages || []);
                 }
-            })
-            .catch(function () {
-                renderMessages(getStaticHistory());
             });
     }
 
@@ -1322,14 +1272,14 @@
 
     function renderPrechatForm() {
         var card = document.createElement('div');
-        card.className = 'insaf-prechat-card';
+        card.className = 'sra-prechat-card';
 
         var title = document.createElement('div');
-        title.className = 'insaf-prechat-title';
+        title.className = 'sra-prechat-title';
         title.innerText = 'Welcome! Please enter your details';
 
         var sub = document.createElement('div');
-        sub.className = 'insaf-prechat-sub';
+        sub.className = 'sra-prechat-sub';
         sub.innerText = 'Fill in your info below so we can assist you better.';
 
         card.appendChild(title);
@@ -1346,19 +1296,19 @@
         }
 
         var btn = document.createElement('button');
-        btn.className = 'insaf-start-btn';
+        btn.className = 'sra-start-btn';
         btn.innerText = 'Start Chat →';
         btn.addEventListener('click', submitPrechatForm);
         card.appendChild(btn);
 
         if (config.prechatMode === 'optional') {
             var skip = document.createElement('div');
-            skip.className = 'insaf-skip-link';
+            skip.className = 'sra-skip-link';
             skip.innerText = 'Skip & Chat as Guest';
             skip.addEventListener('click', function () {
                 isPrechatSubmitted = true;
                 hasInitializedChat = false;
-                try { localStorage.setItem('insaf_prechat_done_' + widgetToken, 'true'); } catch(e){}
+                try { localStorage.setItem('sra_prechat_done_' + widgetToken, 'true'); } catch(e){}
                 loadHistory();
             });
             card.appendChild(skip);
@@ -1369,14 +1319,14 @@
 
     function createFieldGroup(label, type, id, defaultVal, placeholderText) {
         var g = document.createElement('div');
-        g.className = 'insaf-field-group';
+        g.className = 'sra-field-group';
 
         var l = document.createElement('label');
-        l.className = 'insaf-field-label';
+        l.className = 'sra-field-label';
         l.innerText = label;
 
         var inp = document.createElement('input');
-        inp.className = 'insaf-field-input';
+        inp.className = 'sra-field-input';
         inp.type = type;
         inp.id = id;
         inp.value = defaultVal || '';
@@ -1410,10 +1360,10 @@
         }
 
         try {
-            localStorage.setItem('insaf_vis_name', visitorName);
-            localStorage.setItem('insaf_vis_phone', visitorPhone);
-            localStorage.setItem('insaf_vis_email', visitorEmail);
-            localStorage.setItem('insaf_prechat_done_' + widgetToken, 'true');
+            localStorage.setItem('sra_vis_name', visitorName);
+            localStorage.setItem('sra_vis_phone', visitorPhone);
+            localStorage.setItem('sra_vis_email', visitorEmail);
+            localStorage.setItem('sra_prechat_done_' + widgetToken, 'true');
         } catch(e) {}
 
         isPrechatSubmitted = true;
@@ -1427,15 +1377,15 @@
         }
 
         var group = document.createElement('div');
-        group.className = 'insaf-msg-group ' + type;
+        group.className = 'sra-msg-group ' + type;
         if (msgId) group.setAttribute('data-msg-id', msgId);
 
         var bubble = document.createElement('div');
-        bubble.className = 'insaf-msg-bubble';
+        bubble.className = 'sra-msg-bubble';
         bubble.innerText = content || '';
 
         var timeEl = document.createElement('div');
-        timeEl.className = 'insaf-msg-time';
+        timeEl.className = 'sra-msg-time';
         var d = timeStr ? new Date(timeStr) : new Date();
         timeEl.innerText = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -1460,15 +1410,15 @@
         }
 
         var group = document.createElement('div');
-        group.className = 'insaf-msg-group ' + type;
+        group.className = 'sra-msg-group ' + type;
         if (msgId) group.setAttribute('data-msg-id', msgId);
 
         var card = document.createElement('div');
-        card.className = 'insaf-msg-image-card';
+        card.className = 'sra-msg-image-card';
         card.title = 'Click to view full image';
 
         var imgWrap = document.createElement('div');
-        imgWrap.className = 'insaf-msg-img-wrap';
+        imgWrap.className = 'sra-msg-img-wrap';
 
         var img = document.createElement('img');
         img.src = fullUrl;
@@ -1482,7 +1432,7 @@
 
         if (caption) {
             var capEl = document.createElement('div');
-            capEl.className = 'insaf-msg-image-caption';
+            capEl.className = 'sra-msg-image-caption';
             capEl.innerHTML = '<svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg><span>' + escapeHtml(caption) + '</span>';
             card.appendChild(capEl);
         }
@@ -1492,7 +1442,7 @@
         });
 
         var timeEl = document.createElement('div');
-        timeEl.className = 'insaf-msg-time';
+        timeEl.className = 'sra-msg-time';
         var d = timeStr ? new Date(timeStr) : new Date();
         timeEl.innerText = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -1512,32 +1462,32 @@
         if (!fullUrl) return;
 
         var group = document.createElement('div');
-        group.className = 'insaf-msg-group ' + type;
+        group.className = 'sra-msg-group ' + type;
         if (msgId) group.setAttribute('data-msg-id', msgId);
 
         var card = document.createElement('div');
-        card.className = 'insaf-audio-card';
+        card.className = 'sra-audio-card';
 
         var audio = new Audio(fullUrl);
         audio.preload = 'metadata';
 
         var playBtn = document.createElement('button');
         playBtn.type = 'button';
-        playBtn.className = 'insaf-audio-play-btn';
+        playBtn.className = 'sra-audio-play-btn';
         playBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
 
         var info = document.createElement('div');
-        info.className = 'insaf-audio-info';
+        info.className = 'sra-audio-info';
 
         var progBar = document.createElement('div');
-        progBar.className = 'insaf-audio-progress-bar';
+        progBar.className = 'sra-audio-progress-bar';
 
         var progFill = document.createElement('div');
-        progFill.className = 'insaf-audio-progress-fill';
+        progFill.className = 'sra-audio-progress-fill';
         progBar.appendChild(progFill);
 
         var timeEl = document.createElement('div');
-        timeEl.className = 'insaf-audio-time';
+        timeEl.className = 'sra-audio-time';
         var initSec = (typeof initialDuration === 'number' && initialDuration > 0) ? Math.round(initialDuration) : 0;
         if (initSec > 0) {
             var im = Math.floor(initSec / 60);
@@ -1597,7 +1547,7 @@
                     playPromise.then(function () {
                         playBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
                     }).catch(function (err) {
-                        console.warn('[Insaf AI Widget] Audio play failed:', err);
+                        console.warn('[Sales Reply AI Widget] Audio play failed:', err);
                     });
                 } else {
                     playBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
@@ -1621,7 +1571,7 @@
         card.appendChild(info);
 
         var msgTime = document.createElement('div');
-        msgTime.className = 'insaf-msg-time';
+        msgTime.className = 'sra-msg-time';
         var d = timeStr ? new Date(timeStr) : new Date();
         msgTime.innerText = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -1696,27 +1646,7 @@
         if (visitorEmail) formData.append('visitor_email', visitorEmail);
         formData.append('current_url', window.location.href);
 
-        if (!window.INSAF_WIDGET_API_URL) {
-            var userMsgId = 'u_' + Date.now();
-            renderedMsgIds['id_' + userMsgId] = true;
-            if (textToSend) {
-                saveStaticMessage({ id: userMsgId, sender: 'visitor', type: 'text', message: textToSend, created_at: new Date().toISOString() });
-            }
-            setTimeout(function () {
-                typingRow.classList.remove('show');
-                isSending = false;
-                sendBtn.style.opacity = '1';
-                sendBtn.style.pointerEvents = 'auto';
-                var replyText = generateDemoReply(textToSend);
-                var replyId = 'r_' + Date.now();
-                renderedMsgIds['id_' + replyId] = true;
-                appendBubble('incoming', replyText, new Date(), replyId);
-                saveStaticMessage({ id: replyId, sender: 'ai', type: 'text', message: replyText, created_at: new Date().toISOString() });
-                scrollToBottom();
-            }, 900);
-            return;
-        }
-        fetch((window.INSAF_WIDGET_API_URL || baseUrl) + '/api/widget/send', {
+        fetch(baseUrl + '/api/widget/send', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json'
@@ -1772,7 +1702,7 @@
                         }
                         scrollToBottom();
                     } else if (data.message) {
-                        console.warn('[Insaf AI Widget]', data.message);
+                        console.warn('[Sales Reply AI Widget]', data.message);
                     }
                 }, waitMs);
             })
@@ -1781,7 +1711,7 @@
                 isSending = false;
                 sendBtn.style.opacity = '1';
                 sendBtn.style.pointerEvents = 'auto';
-                console.error('[Insaf AI Widget Send Error]', err);
+                console.error('[Sales Reply AI Widget Send Error]', err);
             });
     }
 
@@ -1827,7 +1757,7 @@
             chatBox.style.height = '';
             chatBox.style.top = '';
             chatBox.style.bottom = '';
-            document.documentElement.style.removeProperty('--insaf-vvh');
+            document.documentElement.style.removeProperty('--sra-vvh');
             return;
         }
 
@@ -1835,7 +1765,7 @@
         var h = vv ? vv.height : window.innerHeight;
         var offsetTop = vv ? (vv.offsetTop || 0) : 0;
 
-        document.documentElement.style.setProperty('--insaf-vvh', Math.round(h) + 'px');
+        document.documentElement.style.setProperty('--sra-vvh', Math.round(h) + 'px');
         chatBox.style.height = Math.round(h) + 'px';
         chatBox.style.top = Math.round(offsetTop) + 'px';
         chatBox.style.bottom = 'auto';
@@ -1855,7 +1785,7 @@
         isOpen = !isOpen;
         if (isOpen) {
             chatBox.classList.add('open');
-            container.classList.add('insaf-mobile-open');
+            container.classList.add('sra-mobile-open');
             iconOpen.style.display = 'none';
             iconClose.style.display = 'block';
             lockMobileScroll();
@@ -1867,7 +1797,7 @@
             startPolling();
         } else {
             chatBox.classList.remove('open');
-            container.classList.remove('insaf-mobile-open');
+            container.classList.remove('sra-mobile-open');
             iconOpen.style.display = 'block';
             iconClose.style.display = 'none';
             unlockMobileScroll();
@@ -1877,7 +1807,6 @@
     }
 
     function startPolling() {
-        if (!window.INSAF_WIDGET_API_URL) return;
         if (pollInterval) clearInterval(pollInterval);
         pollInterval = setInterval(function () {
             if (isOpen && !isSending) loadHistory();
