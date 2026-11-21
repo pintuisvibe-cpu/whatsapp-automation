@@ -73,7 +73,7 @@ Once Render shows **Live**:
 
 1. Open `https://YOUR-APP.onrender.com/health` — you should see:
    ```json
-   { "status": "ok", "service": "sales-reply-ai-full-system", ... }
+   { "status": "ok", "service": "sales-reply-ai-full-system-v2", ... }
    ```
 2. Open `https://YOUR-APP.onrender.com` — the Sales Reply AI landing page loads.
 3. Register at `/register` and open `/dashboard`.
